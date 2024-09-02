@@ -4,6 +4,22 @@ import { setThreads, setCurrentThread } from '../../store/threadsSlice';
 import { RootState } from '../../store';
 import { db } from '../../config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { Thread, Message } from '../../types';
+
+// Update the Thread interface
+// interface Thread {
+//   id: string;
+//   messages: Message[];
+//   userId: string;
+//   chatbotId: string;
+// }
+
+// Update the Message interface
+// interface Message {
+//   timestamp: number;
+//   sender: "user" | "bot";
+//   content: string;
+// }
 
 interface ThreadSelectorProps {
   userId: string;
@@ -24,8 +40,24 @@ const ThreadSelector: React.FC<ThreadSelectorProps> = ({ userId, chatbotId }) =>
       const querySnapshot = await getDocs(q);
       const fetchedThreads = querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
-      }));
+        ...doc.data(),
+        userId,
+        chatbotId,
+        messages: (doc.data().messages || []).map((msg: any) => ({
+          timestamp: msg.timestamp,
+          sender: msg.sender as "user" | "bot",
+          content: msg.content || ''
+        }))
+      })) as {
+        id: string;
+        userId: string;
+        chatbotId: string;
+        messages: {
+          timestamp: string;
+          sender: "user" | "bot";
+          content: string;
+        }[];
+      }[];
       dispatch(setThreads(fetchedThreads));
     };
 
