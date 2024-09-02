@@ -7,12 +7,9 @@ const ChatbotList: React.FC = () => {
 
   return (
     <div>
-      <h2>Chatbot List</h2>
-      <ul>
-        {chatbots.map((chatbot) => (
-          <li key={chatbot.id}>{chatbot.name}</li>
-        ))}
-      </ul>
+      {chatbots.map((chatbot) => (
+        <div key={chatbot.id}>{chatbot.name}</div>
+      ))}
     </div>
   );
 };

@@ -6,15 +6,16 @@ interface MessageInputProps {
   onSendMessage: (content: string) => void;
   isLoading: boolean;
   threadId: string;
+  userId: string;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, threadId }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, threadId, userId }) => {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     if (isTyping) {
-      const typingRef = ref(realtimeDb, `threads/${threadId}/typing`);
+      const typingRef = ref(realtimeDb, `threads/${threadId}/typing/${userId}`);
       set(typingRef, true);
       const timeout = setTimeout(() => {
         set(typingRef, false);
@@ -22,7 +23,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, t
       }, 3000);
       return () => clearTimeout(timeout);
     }
-  }, [isTyping, threadId]);
+  }, [isTyping, threadId, userId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

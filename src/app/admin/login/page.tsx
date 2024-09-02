@@ -1,9 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../../store/authSlice';
 import { auth } from '../../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const AdminLoginPage: React.FC = () => {
   const [email, setEmail] = useState('');

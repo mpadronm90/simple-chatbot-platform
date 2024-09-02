@@ -7,9 +7,11 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 
 interface ThreadSelectorProps {
   chatbotId: string;
+  userId: string;
+  adminId: string;
 }
 
-const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId }) => {
+const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId, userId, adminId }) => {
   const dispatch = useDispatch();
   const threads = useSelector((state: RootState) => state.threads.threads);
 
@@ -17,13 +19,17 @@ const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId }) => {
     const fetchThreads = async () => {
       const q = query(
         collection(db, 'threads'),
-        where('chatbotId', '==', chatbotId)
+        where('chatbotId', '==', chatbotId),
+        where('userId', '==', userId),
+        where('adminId', '==', adminId)
       );
       const querySnapshot = await getDocs(q);
       const fetchedThreads = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         chatbotId,
+        userId,
+        adminId,
         messages: (doc.data().messages || []).map((msg: any) => ({
           id: msg.id,
           object: 'message',
@@ -38,7 +44,7 @@ const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId }) => {
     };
 
     fetchThreads();
-  }, [chatbotId, dispatch]);
+  }, [chatbotId, userId, adminId, dispatch]);
 
   return (
     <div className="thread-selector">

@@ -6,16 +6,17 @@ import { realtimeDb } from '../../config/firebase';
 interface MessageListProps {
   messages: Message[];
   threadId: string;
+  userId: string;
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages, threadId }) => {
+const MessageList: React.FC<MessageListProps> = ({ messages, threadId, userId }) => {
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.role === 'assistant') {
-      const readRef = ref(realtimeDb, `threads/${threadId}/read`);
+      const readRef = ref(realtimeDb, `threads/${threadId}/read/${userId}`);
       set(readRef, lastMessage.id);
     }
-  }, [messages, threadId]);
+  }, [messages, threadId, userId]);
 
   return (
     <div className="message-list">

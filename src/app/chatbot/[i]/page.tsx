@@ -1,14 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useParams } from 'next/navigation';
-import ChatInterface from '../../../components/user/ChatInterface';
+import ChatbotInterface from '../../../components/chatbot/ChatbotInterface';
 
 const ChatbotPage: React.FC = () => {
-  const params = useParams();
-  const chatbotId = params.id as string;
-
-  return <ChatInterface chatbotId={chatbotId} userId="user-id" />;
+  return <ChatbotInterface />;
 };
 
 export default ChatbotPage;

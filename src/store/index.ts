@@ -1,17 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authSlice';
-import agentsReducer from './agentsSlice';
-import chatbotsReducer from './chatbotsSlice';
-import threadsReducer from './threadsSlice';
+import rootReducer from './rootReducer';
 
-export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    agents: agentsReducer,
-    chatbots: chatbotsReducer,
-    threads: threadsReducer,
-  },
+const store = configureStore({
+  reducer: rootReducer,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export default store;

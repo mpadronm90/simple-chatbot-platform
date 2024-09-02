@@ -14,7 +14,87 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 6. **End-User Authentication**: Simple email/password authentication for end-users who interact with the chatbot.
 7. **Chat History**: Maintain a history of each user's interactions (threads) with the chatbot.
 
-## Tech Stack
+## Database Structure and Flow
+
+The platform follows this relational structure:
+
+- One admin can have multiple chatbots
+- One chatbot is created with one AI agent (OpenAI assistant)
+- One chatbot pertains to only one admin
+- One admin can have multiple users
+- One user can be associated with only one admin
+- One user can use multiple chatbots from their associated admin
+- One chatbot can be used by multiple users from the same admin
+- One thread is created between one chatbot and one user
+
+### Entity Relationships
+
+1. Admin
+   - Has many: Chatbots, Users
+2. Chatbot
+   - Belongs to: Admin
+   - Has one: AI Agent
+   - Has many: Threads
+3. User
+   - Belongs to: Admin
+   - Has many: Threads
+4. Thread
+   - Belongs to: Chatbot, User
+   - Has many: Messages
+5. AI Agent (OpenAI Assistant)
+   - Belongs to: Chatbot
+
+## Data Flow
+
+1. Admin creates a chatbot and associates it with an AI agent
+2. Admin adds users to their account
+3. Users can signup and login in the chatbot
+4. Admins can signup/login using the admin panel
+5. Users can access chatbots created by their admin
+6. When a user interacts with a chatbot, a new thread is created (if it doesn't exist)
+7. Messages are stored within the thread, maintaining the conversation history
+
+## Firestore Structure
+
+The Firestore database is structured as follows:
+
+```
+firestore-root
+│
+├── admins
+│ └── {adminId}
+│ ├── name: string
+│ ├── email: string
+│ └── ...other admin-specific fields
+│
+├── users
+│ └── {userId}
+│ ├── name: string
+│ ├── email: string
+│ ├── adminId: string
+│ └── ...other user-specific fields
+│
+├── chatbots
+│ └── {chatbotId}
+│ ├── name: string
+│ ├── adminId: string
+│ ├── agentId: string
+│ └── ...other chatbot-specific fields
+│
+├── threads
+│ └── {threadId}
+│ ├── chatbotId: string
+│ ├── userId: string
+│ └── ...other thread-specific fields
+│
+└── messages
+└── {messageId}
+├── threadId: string
+├── senderId: string
+├── content: string
+└── ...other message-specific fields
+
+### Tech Stack
 
 - **Frontend**: Next.js + React.js
 - **Styling**: TailwindCSS
@@ -22,7 +102,7 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 - **Backend**: Firebase (Firestore for data storage, Firebase Auth for admin and end-user authentication)
 - **AI Integration**: OpenAI (API integration for creating agents and managing threads)
 
-## Project Structure
+### Project Structure
 
 ```
 src/
@@ -79,114 +159,6 @@ src/
 4. Run the development server: `npm run dev`
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Firebase Emulator Setup
-
-To set up and use Firebase emulators for local development:
-
-1. Install Firebase CLI globally:
-   ```
-   npm install -g firebase-tools
-   ```
-
-2. Log in to Firebase:
-   ```
-   firebase login
-   ```
-
-3. Initialize Firebase emulators in your project directory:
-   ```
-   firebase init emulators
-   ```
-
-4. Select Firestore and Authentication emulators when prompted.
-
-5. Start the emulators:
-   ```
-   firebase emulators:start
-   ```
-
-6. Update your Firebase configuration in `src/config/firebase.ts` to use emulators in development:
-   ```
-   import { initializeApp } from 'firebase/app';
-   import { getAuth, connectAuthEmulator } from 'firebase/auth';
-   import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-
-   const firebaseConfig = {
-     // Your config here
-   };
-
-   const app = initializeApp(firebaseConfig);
-   export const auth = getAuth(app);
-   export const db = getFirestore(app);
-
-   if (process.env.NODE_ENV === 'development') {
-     connectAuthEmulator(auth, 'http://localhost:9099');
-     connectFirestoreEmulator(db, 'localhost', 8080);
-   }
-   ```
-
-## Current Status
-
-- Basic project structure set up
-- Redux store and slices implemented
-- Firebase configuration added
-- Admin authentication implemented for the entire admin section
-- User authentication implemented within the chatbot interface
-- Basic components created for admin dashboard and chatbot interface
-- Firebase emulators set up for local development
-- OpenAI integration partially implemented
-- Chat interface components partially completed
-
-## Next Steps
-
-1. Complete OpenAI integration:
-   - Finalize functions for generating responses and managing conversations in `utils/openai.ts`
-   - Ensure proper type handling for messages
-
-2. Complete user chat interface components:
-   - Finish `MessageList.tsx` to display chat messages
-   - Implement `MessageInput.tsx` for user input
-   - Create `ThreadSelector.tsx` for managing multiple chat threads
-
-3. Enhance real-time messaging:
-   - Implement WebSocket or Firebase Realtime Database for instant message updates
-   - Add typing indicators and read receipts
-
-4. Develop CRUD operations for chatbots and agents:
-   - Create, Read, Update, and Delete functions for chatbots in `chatbotsSlice.ts`
-   - Implement similar CRUD operations for AI agents in `agentsSlice.ts`
-   - Connect these operations to Firestore database
-
-5. Improve admin dashboard:
-   - Enhance `AdminDashboard.tsx` with analytics and overview of chatbot performance
-   - Add user management features in the admin section
-
-6. Set up Firebase security rules:
-   - Define and implement Firestore security rules to protect data
-   - Set up proper authentication rules for admin and user access
-
-7. Implement error handling and logging:
-   - Add try-catch blocks and error boundaries throughout the application
-   - Set up a logging system for tracking errors and user actions
-
-8. Optimize performance:
-   - Implement lazy loading for components and routes
-   - Add caching mechanisms for frequently accessed data
-
-9. Enhance chatbot configuration:
-   - Expand `ChatbotConfig.tsx` with more customization options
-   - Implement a visual theme editor in `AppearanceSettings.tsx`
-
-10. Add testing:
-    - Write unit tests for utility functions and Redux slices
-    - Implement integration tests for key user flows
-    - Set up end-to-end testing with Cypress or Playwright
-
-11. Prepare for deployment:
-    - Set up continuous integration and deployment (CI/CD) pipeline
-    - Configure production environment variables
-    - Optimize build process for production
-
 ## Contributing
 
 We welcome contributions to this project! To contribute, please follow these steps:
@@ -202,4 +174,4 @@ Please ensure your code follows the project's coding standards and includes appr
 
 ## License
 
-Open for public use
+Under the MIT License in [License](./LICENSE)
