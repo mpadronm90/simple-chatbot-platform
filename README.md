@@ -27,42 +27,42 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 ```
 src/
 ├── app/
-│ ├── admin/
-│ │ ├── login/
-│ │ │ └── page.tsx
-│ │ └── page.tsx
-│ ├── chatbot/
-│ │ └── [id]/
-│ │ └── page.tsx
-│ ├── layout.tsx
-│ └── page.tsx
+│   ├── admin/
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── chatbot/
+│   │   └── [id]/
+│   │       └── page.tsx
+│   ├── layout.tsx
+│   └── page.tsx
 ├── components/
-│ ├── admin/
-│ │ ├── AdminDashboard.tsx
-│ │ ├── AgentManagement.tsx
-│ │ ├── ChatbotForm.tsx
-│ │ ├── ChatbotList.tsx
-│ │ └── withAdminAuth.tsx
-│ ├── chatbot/
-│ │ ├── AgentSelector.tsx
-│ │ ├── AppearanceSettings.tsx
-│ │ ├── ChatbotConfig.tsx
-│ │ └── ChatbotPreview.tsx
-│ └── user/
-│ ├── ChatInterface.tsx
-│ ├── MessageInput.tsx
-│ ├── MessageList.tsx
-│ └── ThreadSelector.tsx
+│   ├── admin/
+│   │   ├── AdminDashboard.tsx
+│   │   ├── AgentManagement.tsx
+│   │   ├── ChatbotForm.tsx
+│   │   ├── ChatbotList.tsx
+│   │   └── withAdminAuth.tsx
+│   ├── chatbot/
+│   │   ├── AgentSelector.tsx
+│   │   ├── AppearanceSettings.tsx
+│   │   ├── ChatbotConfig.tsx
+│   │   └── ChatbotPreview.tsx
+│   └── user/
+│       ├── ChatInterface.tsx
+│       ├── MessageInput.tsx
+│       ├── MessageList.tsx
+│       └── ThreadSelector.tsx
 ├── config/
-│ └── firebase.ts
+│   └── firebase.ts
 ├── store/
-│ ├── agentsSlice.ts
-│ ├── authSlice.ts
-│ ├── chatbotsSlice.ts
-│ ├── index.ts
-│ └── threadsSlice.ts
+│   ├── agentsSlice.ts
+│   ├── authSlice.ts
+│   ├── chatbotsSlice.ts
+│   ├── index.ts
+│   └── threadsSlice.ts
 └── utils/
-└── openai.ts
+    └── openai.ts
 ```
 
 ## Setup and Installation
@@ -106,8 +106,7 @@ To set up and use Firebase emulators for local development:
    ```
 
 6. Update your Firebase configuration in `src/config/firebase.ts` to use emulators in development:
-
-   ```typescript
+   ```
    import { initializeApp } from 'firebase/app';
    import { getAuth, connectAuthEmulator } from 'firebase/auth';
    import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
@@ -135,12 +134,14 @@ To set up and use Firebase emulators for local development:
 - User authentication implemented within the chatbot interface
 - Basic components created for admin dashboard and chatbot interface
 - Firebase emulators set up for local development
+- OpenAI integration partially implemented
+- Chat interface components partially completed
 
 ## Next Steps
 
-1. Implement OpenAI integration:
-   - Set up OpenAI API client in `utils/openai.ts`
-   - Create functions for generating responses and managing conversations
+1. Complete OpenAI integration:
+   - Finalize functions for generating responses and managing conversations in `utils/openai.ts`
+   - Ensure proper type handling for messages
 
 2. Complete user chat interface components:
    - Finish `MessageList.tsx` to display chat messages
@@ -188,8 +189,17 @@ To set up and use Firebase emulators for local development:
 
 ## Contributing
 
-[Add your contributing guidelines here]
+We welcome contributions to this project! To contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add some feature'`).
+5. Push to the branch (`git push origin feature/your-feature-name`).
+6. Open a pull request.
+
+Please ensure your code follows the project's coding standards and includes appropriate tests.
 
 ## License
 
-[Add your license information here]
+Open for public use
