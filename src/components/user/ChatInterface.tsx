@@ -1,67 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { auth } from '../../config/firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { setUser } from '../../store/authSlice';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
+import { setCurrentThread, addMessageToCurrentThread, Message } from '../../store/threadsSlice';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import ThreadSelector from './ThreadSelector';
+import { createAssistant, createThread, addMessage, runAssistantWithStream, runAssistantWithoutStream } from '../../utils/openai';
 
-interface ChatInterfaceProps {
-  chatbotId: string;
-}
-
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ chatbotId }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const ChatInterface: React.FC = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const currentThread = useSelector((state: RootState) => state.threads.currentThread);
+  const messages = useSelector((state: RootState) => state.threads.currentThread?.messages || []);
+  const [isLoading, setIsLoading] = useState(false);
+  const [assistantId, setAssistantId] = useState<string | null>(null);
+  const [useStreaming, setUseStreaming] = useState(true);
 
-  const handleAuth = async (e: React.FormEvent, isLogin: boolean) => {
-    e.preventDefault();
+  useEffect(() => {
+    initializeAssistant();
+  }, []);
+
+  const initializeAssistant = async () => {
     try {
-      const authFunction = isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword;
-      const userCredential = await authFunction(auth, email, password);
-      dispatch(setUser(userCredential.user));
+      const assistant = await createAssistant("ChatbotAssistant", "You are a helpful assistant.");
+      setAssistantId(assistant.id);
     } catch (error) {
-      console.error('Authentication error:', error);
-      // Handle auth error (show message to user)
+      console.error('Failed to initialize assistant:', error);
     }
   };
 
-  if (!user) {
-    return (
-      <div>
-        <form onSubmit={(e) => handleAuth(e, true)}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
-          <button type="submit">Login</button>
-        </form>
-        <button onClick={(e) => handleAuth(e, false)}>Sign Up</button>
-      </div>
-    );
-  }
+  const initializeThread = useCallback(async () => {
+    try {
+      const thread = await createThread();
+      const formattedThread = {
+        ...thread,
+        userId: (thread as any).userId || '', // Ensure userId is set
+        chatbotId: (thread as any).chatbotId || '', // Ensure chatbotId is set
+        messages: (thread as any).messages || [], // Ensure messages is an array
+      };
+      dispatch(setCurrentThread(formattedThread));
+    } catch (error) {
+      console.error('Failed to initialize thread:', error);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!currentThread) {
+      initializeThread();
+    }
+  }, [currentThread, initializeThread]);
+
+  const handleSendMessage = async (content: string) => {
+    if (!currentThread || !assistantId) return;
+
+    setIsLoading(true);
+    try {
+      const message: Message = {
+        id: `${Date.now()}`, // Generate a unique ID
+        object: 'message', // Explicitly set the type to "message"
+        created: Date.now(),
+        role: 'user',
+        content: content,
+        content_type: 'text'
+      };
+      await addMessage(currentThread.id, message.id); // Pass message.id instead of message
+      dispatch(addMessageToCurrentThread(message));
+
+      if (useStreaming) {
+        let streamedContent = '';
+        await runAssistantWithStream(currentThread.id, assistantId, (update) => {
+          streamedContent += update;
+          const botMessage: Message = {
+            id: `${Date.now()}`,
+            object: 'message' as const, // Explicitly type as "message"
+            created: Date.now(),
+            role: 'assistant',
+            content: streamedContent,
+            content_type: 'text'
+          };
+          dispatch(addMessageToCurrentThread(botMessage));
+        });
+      } else {
+        const newMessages = await runAssistantWithoutStream(currentThread.id, assistantId);
+        newMessages.forEach(message => {
+          if (message.role === 'assistant') {
+            const botMessage: Message = {
+              id: `${Date.now()}`,
+              object: 'message' as const, // Explicitly type as "message"
+              created: Date.now(),
+              role: 'assistant',
+              content: message.content.join(' '),
+              content_type: 'text'
+            };
+            dispatch(addMessageToCurrentThread(botMessage));
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div>
-      <ThreadSelector userId={user.uid} chatbotId={chatbotId} />
-      <MessageList />
-      <MessageInput chatbotId={chatbotId} />
+      <MessageList messages={currentThread?.messages || []} />
+      <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} />
     </div>
   );
-};
-
+}
 export default ChatInterface;

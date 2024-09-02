@@ -1,12 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Message {
-  sender: 'user' | 'bot';
+export interface Message {
+  id: string;
+  object: 'message';
+  created: number; // Unix timestamp
+  role: 'system' | 'user' | 'assistant';
   content: string;
-  timestamp: string;
+  content_type: 'text' | 'image' | 'audio' | 'video' | 'file';
+  metadata?: Record<string, string>;
 }
 
-interface Thread {
+export interface Thread {
   id: string;
   userId: string;
   chatbotId: string;
@@ -53,12 +57,5 @@ const threadsSlice = createSlice({
   },
 });
 
-export const {
-  setThreads,
-  addThread,
-  updateThread,
-  removeThread,
-  setCurrentThread,
-  addMessageToCurrentThread,
-} = threadsSlice.actions;
+export const { setThreads, addThread, updateThread, removeThread, setCurrentThread, addMessageToCurrentThread } = threadsSlice.actions;
 export default threadsSlice.reducer;

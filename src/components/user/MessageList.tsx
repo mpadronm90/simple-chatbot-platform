@@ -1,21 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { Message } from '../../store/threadsSlice'; // Ensure this path is correct
 
-const MessageList: React.FC = () => {
-  const currentThread = useSelector((state: RootState) => state.threads.currentThread);
+interface MessageListProps {
+  messages: Message[];
+}
 
-  if (!currentThread) {
-    return <div>No active conversation</div>;
-  }
-
+const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   return (
-    <div className="message-list">
-      {currentThread.messages.map((message, index) => (
-        <div key={index} className={`message ${message.sender}`}>
-          <p>{message.content}</p>
-          <small>{new Date(message.timestamp).toLocaleString()}</small>
-        </div>
+    <div>
+      {messages.map((message, index) => (
+        <div key={index}>{message.content}</div>
       ))}
     </div>
   );
