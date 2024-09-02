@@ -24,6 +24,7 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 
 ## Project Structure
 
+```
 src/
 ├── app/
 │ ├── admin/
@@ -62,6 +63,7 @@ src/
 │ └── threadsSlice.ts
 └── utils/
 └── openai.ts
+```
 
 ## Setup and Installation
 
@@ -77,6 +79,53 @@ src/
 4. Run the development server: `npm run dev`
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+## Firebase Emulator Setup
+
+To set up and use Firebase emulators for local development:
+
+1. Install Firebase CLI globally:
+   ```
+   npm install -g firebase-tools
+   ```
+
+2. Log in to Firebase:
+   ```
+   firebase login
+   ```
+
+3. Initialize Firebase emulators in your project directory:
+   ```
+   firebase init emulators
+   ```
+
+4. Select Firestore and Authentication emulators when prompted.
+
+5. Start the emulators:
+   ```
+   firebase emulators:start
+   ```
+
+6. Update your Firebase configuration in `src/config/firebase.ts` to use emulators in development:
+
+   ```typescript
+   import { initializeApp } from 'firebase/app';
+   import { getAuth, connectAuthEmulator } from 'firebase/auth';
+   import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+
+   const firebaseConfig = {
+     // Your config here
+   };
+
+   const app = initializeApp(firebaseConfig);
+   export const auth = getAuth(app);
+   export const db = getFirestore(app);
+
+   if (process.env.NODE_ENV === 'development') {
+     connectAuthEmulator(auth, 'http://localhost:9099');
+     connectFirestoreEmulator(db, 'localhost', 8080);
+   }
+   ```
+
 ## Current Status
 
 - Basic project structure set up
@@ -85,6 +134,7 @@ src/
 - Admin authentication implemented for the entire admin section
 - User authentication implemented within the chatbot interface
 - Basic components created for admin dashboard and chatbot interface
+- Firebase emulators set up for local development
 
 ## Next Steps
 
