@@ -4,22 +4,7 @@ import { setThreads, setCurrentThread } from '../../store/threadsSlice';
 import { RootState } from '../../store';
 import { db } from '../../config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { Thread, Message } from '../../types';
-
-// Update the Thread interface
-// interface Thread {
-//   id: string;
-//   messages: Message[];
-//   userId: string;
-//   chatbotId: string;
-// }
-
-// Update the Message interface
-// interface Message {
-//   timestamp: number;
-//   sender: "user" | "bot";
-//   content: string;
-// }
+import { Thread } from '../../types';
 
 interface ThreadSelectorProps {
   userId: string;
