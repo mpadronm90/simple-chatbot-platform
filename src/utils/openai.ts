@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { Message } from '../store/threadsSlice'; // Ensure this path is correct
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -110,10 +111,18 @@ export async function runAssistant(assistantId: string, threadId: string) {
   }
 }
 
-export async function getMessages(threadId: string) {
+export async function getMessages(threadId: string): Promise<Message[]> {
   try {
     const messages = await openai.beta.threads.messages.list(threadId);
-    return messages.data;
+    return messages.data.map((msg: any) => ({
+      id: msg.id,
+      object: 'message',
+      created: Number(msg.created),
+      role: msg.role,
+      content: msg.content,
+      content_type: 'text',
+      metadata: msg.metadata
+    }));
   } catch (error) {
     console.error('Error getting messages:', error);
     throw new Error('Failed to get messages');
@@ -136,7 +145,7 @@ export async function runAssistantWithStream(threadId: string, assistantId: stri
   }
 }
 
-export async function runAssistantWithoutStream(threadId: string, assistantId: string, instructions?: string) {
+export async function runAssistantWithoutStream(threadId: string, assistantId: string, instructions?: string): Promise<Message[]> {
   try {
     const run = await openai.beta.threads.runs.createAndPoll(
       threadId,
@@ -148,9 +157,17 @@ export async function runAssistantWithoutStream(threadId: string, assistantId: s
 
     if (run.status === 'completed') {
       const messages = await openai.beta.threads.messages.list(threadId);
-      return messages.data.reverse();
+      return messages.data.reverse().map((msg: any) => ({
+        id: msg.id,
+        object: 'message',
+        created: Number(msg.created),
+        role: msg.role,
+        content: msg.content,
+        content_type: 'text',
+        metadata: msg.metadata
+      }));
     } else {
-      throw new Error(`Run failed with status: ${run.status}`);
+      throw new Error('Run did not complete successfully');
     }
   } catch (error) {
     console.error('Error running assistant without stream:', error);

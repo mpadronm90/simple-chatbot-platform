@@ -1,52 +1,38 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
-import { setCurrentThread, addMessageToCurrentThread, Message } from '../../store/threadsSlice';
+import { addMessageToCurrentThread, setCurrentThread, Message, Thread } from '../../store/threadsSlice';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import { createAssistant, createThread, addMessage, runAssistantWithStream, runAssistantWithoutStream } from '../../utils/openai';
+import ThreadSelector from './ThreadSelector';
+import { addMessage, runAssistantWithStream, runAssistantWithoutStream } from '../../utils/openai';
+import { ref, onValue, push, set } from 'firebase/database';
+import { realtimeDb } from '../../config/firebase';
 
-const ChatInterface: React.FC = () => {
+interface ChatInterfaceProps {
+  chatbotId: string;
+  userId: string;
+}
+
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ chatbotId, userId }) => {
   const dispatch = useDispatch();
   const currentThread = useSelector((state: RootState) => state.threads.currentThread);
-  const messages = useSelector((state: RootState) => state.threads.currentThread?.messages || []);
+  const assistantId = useSelector((state: RootState) => state.agents.agents[0]?.id); // Assuming the first agent is used
   const [isLoading, setIsLoading] = useState(false);
-  const [assistantId, setAssistantId] = useState<string | null>(null);
-  const [useStreaming, setUseStreaming] = useState(true);
 
   useEffect(() => {
-    initializeAssistant();
-  }, []);
-
-  const initializeAssistant = async () => {
-    try {
-      const assistant = await createAssistant("ChatbotAssistant", "You are a helpful assistant.");
-      setAssistantId(assistant.id);
-    } catch (error) {
-      console.error('Failed to initialize assistant:', error);
+    if (currentThread) {
+      const messagesRef = ref(realtimeDb, `threads/${currentThread.id}/messages`);
+      onValue(messagesRef, (snapshot) => {
+        const messages: Message[] = [];
+        snapshot.forEach((childSnapshot) => {
+          const message = childSnapshot.val();
+          messages.push(message);
+        });
+        dispatch(setCurrentThread({ ...currentThread, messages }));
+      });
     }
-  };
-
-  const initializeThread = useCallback(async () => {
-    try {
-      const thread = await createThread();
-      const formattedThread = {
-        ...thread,
-        userId: (thread as any).userId || '', // Ensure userId is set
-        chatbotId: (thread as any).chatbotId || '', // Ensure chatbotId is set
-        messages: (thread as any).messages || [], // Ensure messages is an array
-      };
-      dispatch(setCurrentThread(formattedThread));
-    } catch (error) {
-      console.error('Failed to initialize thread:', error);
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!currentThread) {
-      initializeThread();
-    }
-  }, [currentThread, initializeThread]);
+  }, [currentThread, dispatch]);
 
   const handleSendMessage = async (content: string) => {
     if (!currentThread || !assistantId) return;
@@ -55,45 +41,52 @@ const ChatInterface: React.FC = () => {
     try {
       const message: Message = {
         id: `${Date.now()}`, // Generate a unique ID
-        object: 'message', // Explicitly set the type to "message"
+        object: 'message',
         created: Date.now(),
         role: 'user',
         content: content,
         content_type: 'text'
       };
-      await addMessage(currentThread.id, message.id); // Pass message.id instead of message
+      const newMessageRef = push(ref(realtimeDb, `threads/${currentThread.id}/messages`));
+      await set(newMessageRef, message);
       dispatch(addMessageToCurrentThread(message));
 
-      if (useStreaming) {
+      if (true) { // Assuming useStreaming is always true for simplicity
         let streamedContent = '';
         await runAssistantWithStream(currentThread.id, assistantId, (update) => {
           streamedContent += update;
           const botMessage: Message = {
             id: `${Date.now()}`,
-            object: 'message' as const, // Explicitly type as "message"
+            object: 'message' as const,
             created: Date.now(),
             role: 'assistant',
             content: streamedContent,
             content_type: 'text'
           };
+          const newBotMessageRef = push(ref(realtimeDb, `threads/${currentThread.id}/messages`));
+          set(newBotMessageRef, botMessage);
           dispatch(addMessageToCurrentThread(botMessage));
         });
-      } else {
-        const newMessages = await runAssistantWithoutStream(currentThread.id, assistantId);
-        newMessages.forEach(message => {
-          if (message.role === 'assistant') {
-            const botMessage: Message = {
-              id: `${Date.now()}`,
-              object: 'message' as const, // Explicitly type as "message"
-              created: Date.now(),
-              role: 'assistant',
-              content: message.content.join(' '),
-              content_type: 'text'
-            };
-            dispatch(addMessageToCurrentThread(botMessage));
-          }
-        });
-      }
+      } 
+      // Remove the unreachable else block
+      // else {
+      //   const newMessages = await runAssistantWithoutStream(currentThread?.id ?? '', assistantId);
+      //   newMessages.forEach(message => {
+      //     if (message.role === 'assistant') {
+      //       const botMessage: Message = {
+      //         id: `${Date.now()}`,
+      //         object: 'message' as const,
+      //         created: Date.now(),
+      //         role: 'assistant',
+      //         content: message.content,
+      //         content_type: 'text'
+      //       };
+      //       const newBotMessageRef = push(ref(realtimeDb, `threads/${currentThread?.id ?? ''}/messages`));
+      //       set(newBotMessageRef, botMessage);
+      //       dispatch(addMessageToCurrentThread(botMessage));
+      //     }
+      //   });
+      // }
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -102,9 +95,10 @@ const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div>
-      <MessageList messages={currentThread?.messages || []} />
-      <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+    <div className="chat-interface">
+      <ThreadSelector userId={userId} chatbotId={chatbotId} />
+      {currentThread && <MessageList messages={currentThread.messages} threadId={currentThread.id} userId={userId} />}
+      <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} threadId={currentThread?.id ?? ''} userId={userId} />
     </div>
   );
 }

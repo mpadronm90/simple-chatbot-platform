@@ -8,7 +8,7 @@ const ChatbotPage: React.FC = () => {
   const params = useParams();
   const chatbotId = params.id as string;
 
-  return <ChatInterface chatbotId={chatbotId} />;
+  return <ChatInterface chatbotId={chatbotId} userId="user-id" />;
 };
 
 export default ChatbotPage;
