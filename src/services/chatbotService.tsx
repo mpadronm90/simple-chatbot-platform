@@ -1,22 +1,27 @@
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { ref, get, set } from 'firebase/database';
+import { realtimeDb } from '../config/firebase';
 
 export const getChatbotById = async (chatbotId: string) => {
-  const db = getFirestore();
-  const chatbotDoc = await getDoc(doc(db, 'chatbots', chatbotId));
-  return chatbotDoc.exists() ? chatbotDoc.data() : null;
+  const chatbotRef = ref(realtimeDb, `chatbots/${chatbotId}`);
+  const chatbotSnapshot = await get(chatbotRef);
+  return chatbotSnapshot.exists() ? chatbotSnapshot.val() : null;
+};
+
+export const saveChatbotConfig = async (chatbotId: string, config: { name: string; description: string; avatarUrl: string; styles: { [key: string]: string } }) => {
+  const chatbotRef = ref(realtimeDb, `chatbots/${chatbotId}`);
+  await set(chatbotRef, config);
 };
 
 export const linkUserWithAdmin = async (userId: string, adminId: string) => {
-  const db = getFirestore();
-  const userDoc = doc(db, 'users', userId);
-  const userSnapshot = await getDoc(userDoc);
+  const userRef = ref(realtimeDb, `users/${userId}`);
+  const userSnapshot = await get(userRef);
 
   if (userSnapshot.exists()) {
-    const userData = userSnapshot.data();
+    const userData = userSnapshot.val();
     if (!userData.adminIds.includes(adminId)) {
-      await setDoc(userDoc, { adminIds: [...userData.adminIds, adminId] }, { merge: true });
+      await set(userRef, { ...userData, adminIds: [...userData.adminIds, adminId] });
     }
   } else {
-    await setDoc(userDoc, { adminIds: [adminId] });
+    await set(userRef, { adminIds: [adminId] });
   }
 };

@@ -1,87 +1,71 @@
-[debug] [2024-09-02T06:48:27.461Z] ----------------------------------------------------------------------
-[debug] [2024-09-02T06:48:27.463Z] Command:       /Users/mic/.nvm/versions/node/v18.18.2/bin/node /Users/mic/.nvm/versions/node/v18.18.2/bin/firebase emulators:start
-[debug] [2024-09-02T06:48:27.464Z] CLI Version:   13.16.0
-[debug] [2024-09-02T06:48:27.464Z] Platform:      darwin
-[debug] [2024-09-02T06:48:27.464Z] Node Version:  v18.18.2
-[debug] [2024-09-02T06:48:27.478Z] Time:          Mon Sep 02 2024 14:48:27 GMT+0800 (Singapore Standard Time)
-[debug] [2024-09-02T06:48:27.479Z] ----------------------------------------------------------------------
+[debug] [2024-09-02T11:51:42.844Z] ----------------------------------------------------------------------
+[debug] [2024-09-02T11:51:42.846Z] Command:       /Users/mic/.nvm/versions/node/v18.18.2/bin/node /Users/mic/.nvm/versions/node/v18.18.2/bin/firebase emulators:start
+[debug] [2024-09-02T11:51:42.847Z] CLI Version:   13.16.0
+[debug] [2024-09-02T11:51:42.847Z] Platform:      darwin
+[debug] [2024-09-02T11:51:42.847Z] Node Version:  v18.18.2
+[debug] [2024-09-02T11:51:42.848Z] Time:          Mon Sep 02 2024 19:51:42 GMT+0800 (Singapore Standard Time)
+[debug] [2024-09-02T11:51:42.849Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2024-09-02T06:48:27.603Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2024-09-02T06:48:27.604Z] > authorizing via signed-in user (michelpadronmorales@gmail.com)
-[debug] [2024-09-02T06:48:28.529Z] openjdk version "22.0.2" 2024-07-16
-OpenJDK Runtime Environment Homebrew (build 22.0.2)
+[debug] [2024-09-02T11:51:42.965Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-09-02T11:51:42.966Z] > authorizing via signed-in user (michelpadronmorales@gmail.com)
+[debug] [2024-09-02T11:51:43.044Z] openjdk version "22.0.2" 2024-07-16
+
+[debug] [2024-09-02T11:51:43.045Z] OpenJDK Runtime Environment Homebrew (build 22.0.2)
 OpenJDK 64-Bit Server VM Homebrew (build 22.0.2, mixed mode, sharing)
 
-[debug] [2024-09-02T06:48:28.535Z] Parsed Java major version: 22
-[info] i  emulators: Starting emulators: auth, functions, firestore, hosting {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, hosting"}}
-[debug] [2024-09-02T06:48:30.319Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:30.319Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:30.319Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:30.319Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:30.319Z] [hosting] Hosting Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:30.320Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2024-09-02T06:48:30.331Z] [hub] writing locator at /var/folders/ty/07whscj939n3nvxc4z458x8c0000gn/T/hub-simple-chatbot-platform.json
-[debug] [2024-09-02T06:48:31.002Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:31.002Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:31.002Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-09-02T06:48:31.002Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
-[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: database, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mdatabase, pubsub, storage, dataconnect\u001b[22m"}}
-[debug] [2024-09-02T06:48:31.010Z] defaultcredentials: writing to file /Users/mic/.config/firebase/michelpadronmorales_gmail_com_application_default_credentials.json
-[debug] [2024-09-02T06:48:31.020Z] Setting GAC to /Users/mic/.config/firebase/michelpadronmorales_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/mic/.config/firebase/michelpadronmorales_gmail_com_application_default_credentials.json"}}
-[debug] [2024-09-02T06:48:31.023Z] > refreshing access token with scopes: []
-[debug] [2024-09-02T06:48:31.025Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
-[debug] [2024-09-02T06:48:31.025Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
-[debug] [2024-09-02T06:48:31.428Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
-[debug] [2024-09-02T06:48:31.428Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
-[debug] [2024-09-02T06:48:31.446Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/adminSdkConfig [none]
-[debug] [2024-09-02T06:48:32.773Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/adminSdkConfig 200
-[debug] [2024-09-02T06:48:32.773Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/adminSdkConfig {"projectId":"simple-chatbot-platform","storageBucket":"simple-chatbot-platform.appspot.com"}
-[debug] [2024-09-02T06:48:32.799Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-09-02T06:48:32.800Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2024-09-02T06:48:32.800Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/Users/mic/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","simple-chatbot-platform","--rules","/Users/mic/Documents/Repositories/simple-chatbot-platform/firestore.rules","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/Users/mic/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"simple-chatbot-platform\",\"--rules\",\"/Users/mic/Documents/Repositories/simple-chatbot-platform/firestore.rules\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
-[debug] [2024-09-02T06:48:34.934Z] Sep 02, 2024 2:48:34 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 2:48:34 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2024-09-02T06:48:34.966Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
-[debug] [2024-09-02T06:48:34.966Z] 127.0.0.1:8080
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST= {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST="}}
-[debug] [2024-09-02T06:48:34.966Z] 127.0.0.1:8080
-
-If you are running a Firestore in Datastore Mode project, run:
- {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8080\n\nIf you are running a Firestore in Datastore Mode project, run:\n"}}
-[debug] [2024-09-02T06:48:34.966Z] 
-   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2024-09-02T06:48:41.831Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/simple-chatbot-platform/sites 
-[debug] [2024-09-02T06:48:42.997Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/simple-chatbot-platform/sites 200
-[debug] [2024-09-02T06:48:42.998Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/simple-chatbot-platform/sites {"sites":[{"name":"projects/simple-chatbot-platform/sites/simple-chatbot-platform","defaultUrl":"https://simple-chatbot-platform.web.app","type":"DEFAULT_SITE"}]}
-[debug] [2024-09-02T06:48:42.998Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/webApps/-/config [none]
-[debug] [2024-09-02T06:48:44.282Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/webApps/-/config 200
-[debug] [2024-09-02T06:48:44.283Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/webApps/-/config {"projectId":"simple-chatbot-platform","storageBucket":"simple-chatbot-platform.appspot.com","apiKey":"AIzaSyAUyfiRFm-6HcKXuvSfi_YwtnACfZNxCgA","authDomain":"simple-chatbot-platform.firebaseapp.com","messagingSenderId":"101441943136"}
-[debug] [2024-09-02T06:48:44.293Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform [none]
-[debug] [2024-09-02T06:48:44.712Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform 200
-[debug] [2024-09-02T06:48:44.712Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform {"projectId":"simple-chatbot-platform","projectNumber":"101441943136","displayName":"simple-chatbot-platform","name":"projects/simple-chatbot-platform","resources":{"hostingSite":"simple-chatbot-platform"},"state":"ACTIVE","etag":"1_0cb3bdcd-68c6-4193-8ee6-193a9ac14964"}
+[debug] [2024-09-02T11:51:43.050Z] Parsed Java major version: 22
+[info] i  emulators: Starting emulators: auth, functions, database, hosting {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, database, hosting"}}
+[debug] [2024-09-02T11:51:44.585Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:44.585Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:44.586Z] [database] Database Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:44.586Z] [hosting] Hosting Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:44.586Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"database":[{"address":"127.0.0.1","family":"IPv4","port":9000}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2024-09-02T11:51:44.592Z] [hub] writing locator at /var/folders/ty/07whscj939n3nvxc4z458x8c0000gn/T/hub-simple-chatbot-platform.json
+[debug] [2024-09-02T11:51:45.282Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:45.283Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:45.283Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-09-02T11:51:45.283Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"database":[{"address":"127.0.0.1","family":"IPv4","port":9000}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: firestore, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mfirestore, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2024-09-02T11:51:45.286Z] defaultcredentials: writing to file /Users/mic/.config/firebase/michelpadronmorales_gmail_com_application_default_credentials.json
+[debug] [2024-09-02T11:51:45.291Z] Setting GAC to /Users/mic/.config/firebase/michelpadronmorales_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/mic/.config/firebase/michelpadronmorales_gmail_com_application_default_credentials.json"}}
+[debug] [2024-09-02T11:51:45.294Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/adminSdkConfig [none]
+[debug] [2024-09-02T11:51:45.956Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/adminSdkConfig 200
+[debug] [2024-09-02T11:51:45.956Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/adminSdkConfig {"projectId":"simple-chatbot-platform","databaseURL":"https://simple-chatbot-platform-default-rtdb.firebaseio.com","storageBucket":"simple-chatbot-platform.appspot.com"}
+[debug] [2024-09-02T11:51:45.979Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform [none]
+[debug] [2024-09-02T11:51:46.900Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform 200
+[debug] [2024-09-02T11:51:46.900Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform {"projectId":"simple-chatbot-platform","projectNumber":"101441943136","displayName":"simple-chatbot-platform","name":"projects/simple-chatbot-platform","resources":{"hostingSite":"simple-chatbot-platform","realtimeDatabaseInstance":"simple-chatbot-platform-default-rtdb"},"state":"ACTIVE","etag":"1_0cb3bdcd-68c6-4193-8ee6-193a9ac14964"}
+[debug] [2024-09-02T11:51:46.901Z] database rules config:  [{"instance":"simple-chatbot-platform-default-rtdb","rules":"/Users/mic/Documents/Repositories/simple-chatbot-platform/database.rules.json"}]
+[debug] [2024-09-02T11:51:46.906Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2024-09-02T11:51:46.906Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-09-02T11:51:46.906Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2024-09-02T11:51:46.906Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","/Users/mic/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar","--host","127.0.0.1","--port",9000,"--single_project_mode","Warning","--functions_emulator_host","127.0.0.1","--functions_emulator_port",5001],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host","single_project_mode"],"joinArgs":false,"shell":false} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"/Users/mic/.cache/firebase/emulators/firebase-database-emulator-v4.11.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",9000,\"--single_project_mode\",\"Warning\",\"--functions_emulator_host\",\"127.0.0.1\",\"--functions_emulator_port\",5001],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2024-09-02T11:51:48.002Z] 19:51:48.001 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+ {"metadata":{"emulator":{"name":"database"},"message":"19:51:48.001 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started\n"}}
+[debug] [2024-09-02T11:51:48.183Z] 19:51:48.181 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+ {"metadata":{"emulator":{"name":"database"},"message":"19:51:48.181 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000\n"}}
+[debug] [2024-09-02T11:51:54.876Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/simple-chatbot-platform/sites 
+[debug] [2024-09-02T11:51:55.855Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/simple-chatbot-platform/sites 200
+[debug] [2024-09-02T11:51:55.856Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/simple-chatbot-platform/sites {"sites":[{"name":"projects/simple-chatbot-platform/sites/simple-chatbot-platform","defaultUrl":"https://simple-chatbot-platform.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2024-09-02T11:51:55.856Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/webApps/-/config [none]
+[debug] [2024-09-02T11:51:56.930Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/webApps/-/config 200
+[debug] [2024-09-02T11:51:56.930Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform/webApps/-/config {"projectId":"simple-chatbot-platform","databaseURL":"https://simple-chatbot-platform-default-rtdb.firebaseio.com","storageBucket":"simple-chatbot-platform.appspot.com","apiKey":"AIzaSyAUyfiRFm-6HcKXuvSfi_YwtnACfZNxCgA","authDomain":"simple-chatbot-platform.firebaseapp.com","messagingSenderId":"101441943136"}
+[debug] [2024-09-02T11:51:56.942Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform [none]
+[debug] [2024-09-02T11:51:57.958Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform 200
+[debug] [2024-09-02T11:51:57.958Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/simple-chatbot-platform {"projectId":"simple-chatbot-platform","projectNumber":"101441943136","displayName":"simple-chatbot-platform","name":"projects/simple-chatbot-platform","resources":{"hostingSite":"simple-chatbot-platform","realtimeDatabaseInstance":"simple-chatbot-platform-default-rtdb"},"state":"ACTIVE","etag":"1_0cb3bdcd-68c6-4193-8ee6-193a9ac14964"}
 [info] i  hosting[simple-chatbot-platform]: Serving hosting files from: public {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mpublic\u001b[22m"}}
 [info] ✔  hosting[simple-chatbot-platform]: Local server: http://127.0.0.1:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://127.0.0.1:5000\u001b[22m\u001b[24m"}}
-[debug] [2024-09-02T06:48:44.888Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-09-02T06:48:44.888Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
-[debug] [2024-09-02T06:48:44.888Z] Starting Emulator UI with command {"binary":"node","args":["/Users/mic/.cache/firebase/emulators/ui-v1.13.0/server/server.mjs"],"optionalArgs":[],"joinArgs":false,"shell":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"/Users/mic/.cache/firebase/emulators/ui-v1.13.0/server/server.mjs\"],\"optionalArgs\":[],\"joinArgs\":false,\"shell\":false}"}}
+[debug] [2024-09-02T11:51:58.086Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-09-02T11:51:58.086Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2024-09-02T11:51:58.086Z] Starting Emulator UI with command {"binary":"node","args":["/Users/mic/.cache/firebase/emulators/ui-v1.13.0/server/server.mjs"],"optionalArgs":[],"joinArgs":false,"shell":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"/Users/mic/.cache/firebase/emulators/ui-v1.13.0/server/server.mjs\"],\"optionalArgs\":[],\"joinArgs\":false,\"shell\":false}"}}
 [info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
-[debug] [2024-09-02T06:48:45.061Z] Web / API server started at 127.0.0.1:4000
+[debug] [2024-09-02T11:51:58.242Z] Web / API server started at 127.0.0.1:4000
  {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at 127.0.0.1:4000\n"}}
-[debug] [2024-09-02T06:48:45.061Z] Web / API server started at ::1:4000
+[debug] [2024-09-02T11:51:58.242Z] Web / API server started at ::1:4000
  {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at ::1:4000\n"}}
 [info] i  functions: Watching "/Users/mic/Documents/Repositories/simple-chatbot-platform/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/mic/Documents/Repositories/simple-chatbot-platform/functions\" for Cloud Functions..."}}
-[debug] [2024-09-02T06:48:45.107Z] Validating nodejs source
-[debug] [2024-09-02T06:48:46.607Z] > [functions] package.json contents: {
+[debug] [2024-09-02T11:51:58.305Z] Validating nodejs source
+[debug] [2024-09-02T11:51:59.520Z] > [functions] package.json contents: {
   "name": "functions",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
@@ -115,6 +99,14 @@ Dev App Server is now running.
 [error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
 
  functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
+[debug] [2024-09-02T11:51:59.522Z] >>> [apiv2][query] PUT http://127.0.0.1:9000/.settings/rules.json ns=simple-chatbot-platform-default-rtdb
+[debug] [2024-09-02T11:51:59.522Z] >>> [apiv2][body] PUT http://127.0.0.1:9000/.settings/rules.json "{\n  \"rules\": {\n    \".read\": \"auth != null\",\n    \".write\": \"auth != null\",\n    \"threads\": {\n      \"$threadId\": {\n        \".read\": \"auth != null && (data.child('userId').val() === auth.uid || data.child('adminId').val() === auth.uid)\",\n        \".write\": \"auth != null && (data.child('userId').val() === auth.uid || data.child('adminId').val() === auth.uid)\"\n      }\n    },\n    \"chatbots\": {\n      \"$chatbotId\": {\n        \".read\": \"auth != null\",\n        \".write\": \"auth != null && auth.token.role === 'admin'\"\n      }\n    },\n    \"users\": {\n      \"$userId\": {\n        \".read\": \"auth != null && auth.uid === $userId\",\n        \".write\": \"auth != null && auth.uid === $userId\"\n      }\n    }\n  }\n}\n"
+[debug] [2024-09-02T11:51:59.915Z] 19:51:59.915 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - simple-chatbot-platform-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 151ms, init: 0ms
+ {"metadata":{"emulator":{"name":"database"},"message":"19:51:59.915 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - simple-chatbot-platform-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 151ms, init: 0ms\n"}}
+[debug] [2024-09-02T11:52:00.027Z] 19:52:00.026 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace simple-chatbot-platform-default-rtdb status Active to Active
+ {"metadata":{"emulator":{"name":"database"},"message":"19:52:00.026 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace simple-chatbot-platform-default-rtdb status Active to Active\n"}}
+[debug] [2024-09-02T11:52:00.062Z] <<< [apiv2][status] PUT http://127.0.0.1:9000/.settings/rules.json 200
+[debug] [2024-09-02T11:52:00.062Z] <<< [apiv2][body] PUT http://127.0.0.1:9000/.settings/rules.json {"status":"ok"}
 [info] 
 ┌─────────────────────────────────────────────────────────────┐
 │ ✔  All emulators ready! It is now safe to connect your app. │
@@ -128,368 +120,12 @@ Dev App Server is now running.
 ├────────────────┼────────────────┼─────────────────────────────────┤
 │ Functions      │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
 ├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
+│ Database       │ 127.0.0.1:9000 │ http://127.0.0.1:4000/database  │
 ├────────────────┼────────────────┼─────────────────────────────────┤
 │ Hosting        │ 127.0.0.1:5000 │ n/a                             │
 └────────────────┴────────────────┴─────────────────────────────────┘
   Emulator Hub running at 127.0.0.1:4400
-  Other reserved ports: 4500, 9150
+  Other reserved ports: 4500
 
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:54.444Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js [none]
-[debug] [2024-09-02T06:52:54.448Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js [none]
-[debug] [2024-09-02T06:52:54.558Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js [none]
-[debug] [2024-09-02T06:52:54.560Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js [none]
-[debug] [2024-09-02T06:52:54.564Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-functions-compat.js [none]
-[debug] [2024-09-02T06:52:54.566Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging-compat.js [none]
-[debug] [2024-09-02T06:52:54.715Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js 200
-[debug] [2024-09-02T06:52:54.715Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js [stream]
-[debug] [2024-09-02T06:52:54.727Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js 200
-[debug] [2024-09-02T06:52:54.727Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js [stream]
-[debug] [2024-09-02T06:52:54.748Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js 200
-[debug] [2024-09-02T06:52:54.748Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] "GET /__/firebase/10.13.1/firebase-app-compat.js HTTP/1.1" 200 10053 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] \"GET /__/firebase/10.13.1/firebase-app-compat.js HTTP/1.1\" 200 10053 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:54.768Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-storage-compat.js [none]
-[debug] [2024-09-02T06:52:54.803Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js 200
-[debug] [2024-09-02T06:52:54.803Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js [stream]
-[debug] [2024-09-02T06:52:54.848Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-functions-compat.js 200
-[debug] [2024-09-02T06:52:54.848Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-functions-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] "GET /__/firebase/10.13.1/firebase-functions-compat.js HTTP/1.1" 200 3267 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] \"GET /__/firebase/10.13.1/firebase-functions-compat.js HTTP/1.1\" 200 3267 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:54.857Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics-compat.js [none]
-[debug] [2024-09-02T06:52:54.867Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging-compat.js 200
-[debug] [2024-09-02T06:52:54.867Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] "GET /__/firebase/10.13.1/firebase-messaging-compat.js HTTP/1.1" 200 9989 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:54 +0000] \"GET /__/firebase/10.13.1/firebase-messaging-compat.js HTTP/1.1\" 200 9989 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:54.897Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-remote-config-compat.js [none]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-auth-compat.js HTTP/1.1" 200 39641 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-auth-compat.js HTTP/1.1\" 200 39641 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:55.033Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-performance-compat.js [none]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-database-compat.js HTTP/1.1" 200 48014 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-database-compat.js HTTP/1.1\" 200 48014 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:55.254Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-storage-compat.js 200
-[debug] [2024-09-02T06:52:55.254Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-storage-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-firestore-compat.js HTTP/1.1" 200 101808 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-firestore-compat.js HTTP/1.1\" 200 101808 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:55.314Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics-compat.js 200
-[debug] [2024-09-02T06:52:55.314Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-analytics-compat.js HTTP/1.1" 200 9215 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-analytics-compat.js HTTP/1.1\" 200 9215 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:55.340Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-remote-config-compat.js 200
-[debug] [2024-09-02T06:52:55.340Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-remote-config-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-remote-config-compat.js HTTP/1.1" 200 8815 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-remote-config-compat.js HTTP/1.1\" 200 8815 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-storage-compat.js HTTP/1.1" 200 12991 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-storage-compat.js HTTP/1.1\" 200 12991 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T06:52:55.371Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-performance-compat.js 200
-[debug] [2024-09-02T06:52:55.372Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/10.13.1/firebase-performance-compat.js [stream]
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /__/firebase/10.13.1/firebase-performance-compat.js HTTP/1.1" 200 10251 "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /__/firebase/10.13.1/firebase-performance-compat.js HTTP/1.1\" 200 10251 \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] "GET /favicon.ico HTTP/1.1" 200 - "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:06:52:55 +0000] \"GET /favicon.ico HTTP/1.1\" 200 - \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[info] i  hosting: 127.0.0.1 - - [02/Sep/2024:07:00:53 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://127.0.0.1:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [02/Sep/2024:07:00:53 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36\""}}
-[debug] [2024-09-02T07:01:54.774Z] Sep 02, 2024 3:01:54 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:01:54 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2024-09-02T07:01:54.832Z] Sep 02, 2024 3:01:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:01:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2024-09-02T07:01:55.231Z] Sep 02, 2024 3:01:55 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:01:55 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
-[debug] [2024-09-02T07:01:58.045Z] Sep 02, 2024 3:01:58 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
-INFO: Websocket client disconnected
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:01:58 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed\nINFO: Websocket client disconnected\n"}}
-[debug] [2024-09-02T07:02:02.392Z] Sep 02, 2024 3:02:02 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:02:02 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2024-09-02T07:02:05.206Z] Sep 02, 2024 3:02:05 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
-INFO: Websocket client disconnected
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:02:05 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed\nINFO: Websocket client disconnected\n"}}
-[debug] [2024-09-02T07:02:08.593Z] Sep 02, 2024 3:02:08 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:02:08 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2024-09-02T07:02:11.145Z] Sep 02, 2024 3:02:11 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
-INFO: Websocket client disconnected
- {"metadata":{"emulator":{"name":"firestore"},"message":"Sep 02, 2024 3:02:11 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed\nINFO: Websocket client disconnected\n"}}
-[debug] [2024-09-02T09:17:32.731Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:17:33.740Z] Validating nodejs source
-[debug] [2024-09-02T09:17:38.371Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:18:00.604Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:18:01.608Z] Validating nodejs source
-[debug] [2024-09-02T09:18:02.813Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:28:19.151Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/tsconfig.json changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/tsconfig.json changed, reloading triggers"}}
-[debug] [2024-09-02T09:28:20.155Z] Validating nodejs source
-[debug] [2024-09-02T09:28:22.211Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:28:33.954Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:28:34.962Z] Validating nodejs source
-[debug] [2024-09-02T09:28:36.223Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:28:48.618Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:28:49.624Z] Validating nodejs source
-[debug] [2024-09-02T09:28:50.449Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:29:02.671Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:29:03.673Z] Validating nodejs source
-[debug] [2024-09-02T09:29:04.470Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:29:18.439Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:29:19.441Z] Validating nodejs source
-[debug] [2024-09-02T09:29:20.247Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}
-[debug] [2024-09-02T09:29:37.278Z] File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/mic/Documents/Repositories/simple-chatbot-platform/functions/src/index.ts changed, reloading triggers"}}
-[debug] [2024-09-02T09:29:38.280Z] Validating nodejs source
-[debug] [2024-09-02T09:29:39.656Z] > [functions] package.json contents: {
-  "name": "functions",
-  "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "18"
-  },
-  "main": "lib/index.js",
-  "dependencies": {
-    "firebase-admin": "^12.1.0",
-    "firebase-functions": "^5.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.1.0",
-    "typescript": "^4.9.0"
-  },
-  "private": true
-}
-[error] ⬢  functions: Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:
-
- functions/lib/index.js does not exist, can't deploy Cloud Functions {"metadata":{"emulator":{"name":"functions"},"message":"Failed to load function definition from source: FirebaseError: There was an error reading functions/package.json:\n\n functions/lib/index.js does not exist, can't deploy Cloud Functions"}}

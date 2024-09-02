@@ -1,7 +1,7 @@
-"use client"; // Ensure this is a Client Component
+"use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Use next/navigation for useRouter in app directory
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Home() {
@@ -31,6 +31,9 @@ export default function Home() {
         </button>
         <Link href="/admin" className="text-blue-500">
           Admin Panel
+        </Link>
+        <Link href="/admin/login" className="text-blue-500">
+          Admin Login
         </Link>
       </div>
     </main>

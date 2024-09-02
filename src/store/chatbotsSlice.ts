@@ -10,6 +10,7 @@ interface Chatbot {
     font: string;
     size: string;
   };
+  styles?: React.CSSProperties;
 }
 
 interface ChatbotsState {

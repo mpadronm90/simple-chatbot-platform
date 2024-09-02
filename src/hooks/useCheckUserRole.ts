@@ -1,25 +1,32 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUserRole } from '../store/authSlice';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth'; // Ensure this import is present
+'use client';
+
+import { useEffect, useState } from 'react';
+import { auth } from '../config/firebase';
 
 const useCheckUserRole = () => {
-  const dispatch = useDispatch();
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUserRole = async () => {
-      const user = firebase.auth().currentUser;
+      const user = auth.currentUser;
       if (user) {
         const idTokenResult = await user.getIdTokenResult();
-        const role = idTokenResult.claims.role;
-        const adminId = idTokenResult.claims.adminId;
-        dispatch(setUserRole({ role, adminId }));
+        const userRole = idTokenResult.claims.role;
+        if (typeof userRole === 'string' || userRole === null) {
+          setRole(userRole);
+        } else {
+          setRole(null);
+        }
+        // Handle the role as needed
+      } else {
+        setRole(null);
       }
     };
 
     checkUserRole();
-  }, [dispatch]);
+  }, []);
+
+  return role;
 };
 
 export default useCheckUserRole;

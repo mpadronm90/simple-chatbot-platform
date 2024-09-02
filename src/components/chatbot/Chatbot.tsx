@@ -80,8 +80,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
     }
   };
 
+  const chatbotStyles = chatbot?.styles || {};
+
   return (
-    <div className="chat-interface">
+    <div className="chat-interface" style={chatbotStyles}>
       {chatbot ? (
         <>
           <ThreadSelector chatbotId={chatbotId} userId={userId} adminId={adminId} />
@@ -93,6 +95,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
       )}
     </div>
   );
-}
+};
 
 export default Chatbot;

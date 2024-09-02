@@ -1,24 +1,27 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 import { RootState } from '../../store';
 
 const withAdminAuth = (WrappedComponent: React.FC) => {
   const ComponentWithAuth = (props: any) => {
-    const router = useRouter();
+    const [isMounted, setIsMounted] = useState(false);
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        router.push('/admin/login');
-      }
-    }, [isAuthenticated, router]);
+      setIsMounted(true);
+    }, []);
 
-    if (!isAuthenticated) {
-      return null;
+    useEffect(() => {
+      if (isMounted && !isAuthenticated) {
+        window.location.href = '/admin/login';
+      }
+    }, [isMounted, isAuthenticated]);
+
+    if (!isMounted) {
+      return null; // Ensure this code runs only after the component is mounted
     }
 
-    return <WrappedComponent {...props} />;
+    return isAuthenticated ? <WrappedComponent {...props} /> : null;
   };
 
   return ComponentWithAuth;

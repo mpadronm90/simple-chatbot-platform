@@ -2,16 +2,22 @@ import React, { useState } from 'react';
 import ChatbotPreview from './ChatbotPreview';
 
 interface ChatbotConfigProps {
-  onSave: (config: { name: string; description: string; avatarUrl: string }) => void;
+  onSave: (config: { name: string; description: string; avatarUrl: string; styles: { [key: string]: string } }) => void;
 }
 
 const ChatbotConfig: React.FC<ChatbotConfigProps> = ({ onSave }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [styles, setStyles] = useState<{ [key: string]: string }>({});
 
   const handleSave = () => {
-    onSave({ name, description, avatarUrl });
+    onSave({ name, description, avatarUrl, styles });
+  };
+
+  const handleStyleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setStyles((prevStyles) => ({ ...prevStyles, [name]: value }));
   };
 
   return (
@@ -33,6 +39,20 @@ const ChatbotConfig: React.FC<ChatbotConfigProps> = ({ onSave }) => {
         placeholder="Avatar URL"
         value={avatarUrl}
         onChange={(e) => setAvatarUrl(e.target.value)}
+      />
+      <input
+        type="text"
+        name="backgroundColor"
+        placeholder="Background Color"
+        value={styles.backgroundColor || ''}
+        onChange={handleStyleChange}
+      />
+      <input
+        type="text"
+        name="textColor"
+        placeholder="Text Color"
+        value={styles.textColor || ''}
+        onChange={handleStyleChange}
       />
       <button onClick={handleSave}>Save</button>
       <ChatbotPreview name={name} description={description} avatarUrl={avatarUrl} />

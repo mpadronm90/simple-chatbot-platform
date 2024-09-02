@@ -1,0 +1,4 @@
+19:51:48.001 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+19:51:48.181 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+19:51:59.915 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - simple-chatbot-platform-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 151ms, init: 0ms
+19:52:00.026 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace simple-chatbot-platform-default-rtdb status Active to Active

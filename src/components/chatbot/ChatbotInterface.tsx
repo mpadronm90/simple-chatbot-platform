@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Chatbot from './Chatbot';
 import LoginSignup from './LoginSignup';
@@ -7,24 +6,19 @@ import { getChatbotById, linkUserWithAdmin } from '../../services/chatbotService
 
 const ChatbotInterface = () => {
   const [isClient, setIsClient] = useState(false);
-  const [chatbotIdString, setChatbotIdString] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [adminId, setAdminId] = useState(null);
-  const [chatbotExists, setChatbotExists] = useState(true);
+  const [chatbotExists, setChatbotExists] = useState(false);
+  const [chatbotIdString, setChatbotIdString] = useState('');
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isClient) {
-      const { id } = router.query;
-      const chatbotId = Array.isArray(id) ? id[0] : id || '';
+    if (typeof window !== 'undefined') {
+      const pathSegments = window.location.pathname.split('/');
+      const chatbotId = pathSegments[pathSegments.length - 1];
       setChatbotIdString(chatbotId);
     }
-  }, [isClient, router.query]);
+  }, []);
 
   useEffect(() => {
     const fetchChatbot = async () => {
@@ -54,6 +48,10 @@ const ChatbotInterface = () => {
       }
     });
   }, [adminId]);
+
+  if (!isClient) {
+    return null;
+  }
 
   if (!chatbotExists) {
     return <p>Chatbot does not exist</p>;

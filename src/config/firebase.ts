@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getDatabase, connectDatabaseEmulator } from 'firebase/database';
 
 const firebaseConfig = {
@@ -12,11 +11,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
 export const realtimeDb = getDatabase(app);
 
 if (process.env.NODE_ENV === 'development') {
-  connectAuthEmulator(auth, 'http://localhost:9099');
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectDatabaseEmulator(realtimeDb, 'localhost', 9000);
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099');
+  connectDatabaseEmulator(realtimeDb, '127.0.0.1', 9000);
 }
