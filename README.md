@@ -54,12 +54,12 @@ The platform follows this relational structure:
 6. When a user interacts with a chatbot, a new thread is created (if it doesn't exist)
 7. Messages are stored within the thread, maintaining the conversation history
 
-## Firestore Structure
+## Firebase Database Structure
 
-The Firestore database is structured as follows:
+The Firebase database is structured as follows:
 
 ```
-firestore-root
+firebase-root
 │
 ├── admins
 │ └── {adminId}
@@ -93,6 +93,7 @@ firestore-root
 ├── senderId: string
 ├── content: string
 └── ...other message-specific fields
+```
 
 ### Tech Stack
 
@@ -104,7 +105,7 @@ firestore-root
 
 ### Project Structure
 
-```
+````
 src/
 ├── app/
 │   ├── admin/
@@ -143,7 +144,7 @@ src/
 │   └── threadsSlice.ts
 └── utils/
     └── openai.ts
-```
+````
 
 ## Setup and Installation
 
@@ -154,10 +155,11 @@ src/
    NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
-   OPENAI_API_KEY=your_openai_api_key
+   NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
    ```
 4. Run the development server: `npm run dev`
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Run Firebase emulators for Auth and Realtime Database
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Contributing
 
@@ -174,4 +176,4 @@ Please ensure your code follows the project's coding standards and includes appr
 
 ## License
 
-Under the MIT License in [License](./LICENSE)
+Under the MIT License in [License](https://github.com/mpadronm90/simple-chatbot-platform/blob/main/LICENSE))
