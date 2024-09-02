@@ -1,0 +1,28 @@
+.appearance-settings {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.appearance-settings h3 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.appearance-settings label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1em;
+  color: #555;
+}
+
+.appearance-settings select {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
