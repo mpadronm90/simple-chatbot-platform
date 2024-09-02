@@ -1,15 +1,19 @@
 'use client';
 
-import React, { useEffect, ReactNode } from 'react';
+import React, { useEffect } from 'react';
+import { Provider } from 'react-redux';
 import { Inter } from 'next/font/google';
 import StoreProvider from './StoreProvider';
 import './globals.css';
-import useCheckUserRole from '../hooks/useCheckUserRole';
+import { monitorAuthState } from '../utils/firebase';
+import store from '../store';
 
 const inter = Inter({ subsets: ["latin"] });
 
-const ClientWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
-  useCheckUserRole();
+const ClientWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  useEffect(() => {
+    monitorAuthState();
+  }, []);
 
   return <>{children}</>;
 };
@@ -18,9 +22,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.className}>
-        <StoreProvider>
-          <ClientWrapper>{children}</ClientWrapper>
-        </StoreProvider>
+        <Provider store={store}>
+          <StoreProvider>
+            <ClientWrapper>{children}</ClientWrapper>
+          </StoreProvider>
+        </Provider>
       </body>
     </html>
   );

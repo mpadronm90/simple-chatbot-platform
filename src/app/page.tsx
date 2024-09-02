@@ -32,8 +32,11 @@ export default function Home() {
         <Link href="/admin" className="text-blue-500">
           Admin Panel
         </Link>
-        <Link href="/admin/login" className="text-blue-500">
+        <Link href="/admin/auth?type=login" className="text-blue-500">
           Admin Login
+        </Link>
+        <Link href="/admin/auth?type=signup" className="text-blue-500">
+          Admin Sign Up
         </Link>
       </div>
     </main>

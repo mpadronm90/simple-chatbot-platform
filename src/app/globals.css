@@ -1,11 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 255, 255, 255; /* White text */
+  --background-start-rgb: 0, 0, 0; /* Black background */
+  --background-end-rgb: 0, 0, 0; /* Black background */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,12 +18,20 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-start-rgb));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  background-color: #000; /* Black background for container */
+  color: #fff; /* White text for container */
 }
 
 @layer utilities {
@@ -33,15 +41,31 @@ body {
 }
 
 input {
-  color: #000; /* Ensure text color is black */
-  background-color: #fff; /* Ensure background color is white */
+  color: #fff; /* White text */
+  background-color: #000; /* Black background */
   border: 1px solid #ccc; /* Add a border */
   padding: 10px; /* Add some padding */
   font-size: 16px; /* Set font size */
+  width: 100%; /* Make input take full width */
+  margin-bottom: 10px; /* Add some space between inputs */
 }
 
 input:disabled {
-  background-color: #f5f5f5; /* Change background color when disabled */
+  background-color: #333; /* Darker background when disabled */
+}
+
+button {
+  width: 100%; /* Make button take full width */
+  padding: 10px; /* Add some padding */
+  font-size: 16px; /* Set font size */
+  background-color: #fff; /* White background */
+  color: #000; /* Black text */
+  border: 1px solid #ccc; /* Add a border */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+button:hover {
+  background-color: #ccc; /* Change background on hover */
 }
 
 .appearance-settings {
@@ -49,20 +73,21 @@ input:disabled {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #000; /* Black background */
+  color: #fff; /* White text */
 }
 
 .appearance-settings h3 {
   margin-bottom: 10px;
   font-size: 1.2em;
-  color: #333;
+  color: #fff; /* White text */
 }
 
 .appearance-settings label {
   display: flex;
   flex-direction: column;
   font-size: 1em;
-  color: #555;
+  color: #ccc; /* Light gray text */
 }
 
 .appearance-settings select {
@@ -71,75 +96,7 @@ input:disabled {
   font-size: 1em;
   border: 1px solid #ccc;
   border-radius: 3px;
-}
-
-.admin-login {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.admin-login h2 {
-  margin-bottom: 20px;
-  font-size: 1.5em;
-  color: #333;
-  text-align: center;
-}
-
-.admin-login form {
-  display: flex;
-  flex-direction: column;
-}
-
-.admin-login input {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.admin-login button {
-  padding: 10px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.admin-login button:hover {
-  background-color: #0056b3;
-}
-
-.admin-login-container,
-.admin-login,
-.admin-dashboard {
-  background-color: #000;
-  color: #fff;
-}
-
-.admin-login input,
-.admin-login button,
-.admin-dashboard input,
-.admin-dashboard button {
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #fff;
-}
-
-.admin-login input::placeholder,
-.admin-dashboard input::placeholder {
-  color: #000;
-}
-
-.admin-login button:hover,
-.admin-dashboard button:hover {
-  background-color: #ccc;
+  background-color: #000; /* Black background */
+  color: #fff; /* White text */
+  width: 100%; /* Make select take full width */
 }

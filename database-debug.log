@@ -2,3 +2,8 @@
 19:51:48.181 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
 19:51:59.915 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - simple-chatbot-platform-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 151ms, init: 0ms
 19:52:00.026 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace simple-chatbot-platform-default-rtdb status Active to Active
+22:03:31.042 [FirebaseWorkerPool-1-3] WARN com.firebase.core.persistence.backend.dummy.EmulatorMetadataPersistence - Multiple projectIds are not recommended in single project mode. Requested 
+namespace simple-chatbot-platform, but the emulator is configured for simple-chatbot-platform-default-rtdb. To 
+opt-out of single project mode add/set the singleProjectMode: false property in 
+the firebase.json emulators config. 
+22:03:31.083 [NamespaceSystem-akka.actor.default-dispatcher-11] INFO com.firebase.core.namespace.NamespaceActor - simple-chatbot-platform successfully activated FBKV (SurveyIdle(0)) wait: 19ms, init: 0ms

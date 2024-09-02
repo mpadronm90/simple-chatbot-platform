@@ -22,7 +22,7 @@ const authSlice = createSlice({
     setUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
     },
-    setUserRole(state, action: PayloadAction<{ role: 'admin' | 'user'; adminId: string | null }>) {
+    setUserRole(state, action: PayloadAction<{ role: 'admin' | 'user' | null; adminId: string | null }>) {
       state.role = action.payload.role;
       state.adminId = action.payload.adminId;
     },
