@@ -6,16 +6,29 @@ import LoginSignup from './LoginSignup';
 import { getChatbotById, linkUserWithAdmin } from '../../services/chatbotService';
 
 const ChatbotInterface = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const chatbotIdString = Array.isArray(id) ? id[0] : id || '';
+  const [isClient, setIsClient] = useState(false);
+  const [chatbotIdString, setChatbotIdString] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [adminId, setAdminId] = useState(null);
   const [chatbotExists, setChatbotExists] = useState(true);
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isClient) {
+      const { id } = router.query;
+      const chatbotId = Array.isArray(id) ? id[0] : id || '';
+      setChatbotIdString(chatbotId);
+    }
+  }, [isClient, router.query]);
+
+  useEffect(() => {
     const fetchChatbot = async () => {
-      if (typeof chatbotIdString === 'string') {
+      if (chatbotIdString) {
         const chatbot = await getChatbotById(chatbotIdString);
         if (chatbot) {
           setAdminId(chatbot.adminId);

@@ -1,11 +1,20 @@
 import OpenAI from 'openai';
 import { Message } from '../store/threadsSlice'; // Ensure this path is correct
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai: OpenAI | null = null;
+
+if (typeof window === 'undefined') {
+  openai = new OpenAI({
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  });
+}
+
+export { openai };
 
 export async function createAssistant(name: string, instructions: string) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const assistant = await openai.beta.assistants.create({
       name: name,
@@ -13,7 +22,6 @@ export async function createAssistant(name: string, instructions: string) {
       model: "gpt-4-turbo-preview",
     });
 
-    // Handle the response object
     const assistantDetails = {
       id: assistant.id,
       object: assistant.object,
@@ -37,10 +45,12 @@ export async function createAssistant(name: string, instructions: string) {
 }
 
 export async function createThread() {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const thread = await openai.beta.threads.create();
 
-    // Handle the response object
     const threadDetails = {
       id: thread.id,
       object: thread.object,
@@ -57,13 +67,15 @@ export async function createThread() {
 }
 
 export async function addMessage(threadId: string, content: string) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const message = await openai.beta.threads.messages.create(threadId, {
       role: "user",
       content: content,
     });
 
-    // Handle the response object
     const messageDetails = {
       id: message.id,
       object: message.object,
@@ -85,12 +97,14 @@ export async function addMessage(threadId: string, content: string) {
 }
 
 export async function runAssistant(assistantId: string, threadId: string) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const run = await openai.beta.threads.runs.create(threadId, {
       assistant_id: assistantId,
     });
 
-    // Poll for the run's completion
     let runStatus = run.status;
     while (runStatus !== 'completed' && runStatus !== 'failed') {
       await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
@@ -99,9 +113,8 @@ export async function runAssistant(assistantId: string, threadId: string) {
     }
 
     if (runStatus === 'completed') {
-      // Retrieve the messages from the thread
       const messages = await openai.beta.threads.messages.list(threadId);
-      return messages.data; // Ensure to return the data property
+      return messages.data;
     } else {
       throw new Error('Run failed');
     }
@@ -112,6 +125,9 @@ export async function runAssistant(assistantId: string, threadId: string) {
 }
 
 export async function getMessages(threadId: string): Promise<Message[]> {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const messages = await openai.beta.threads.messages.list(threadId);
     return messages.data.map((msg: any) => ({
@@ -130,6 +146,9 @@ export async function getMessages(threadId: string): Promise<Message[]> {
 }
 
 export async function runAssistantWithStream(threadId: string, assistantId: string, onUpdate: (event: any) => void) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const stream = await openai.beta.threads.runs.create(threadId, {
       assistant_id: assistantId,
@@ -146,6 +165,9 @@ export async function runAssistantWithStream(threadId: string, assistantId: stri
 }
 
 export async function runAssistantWithoutStream(threadId: string, assistantId: string, instructions?: string): Promise<Message[]> {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const run = await openai.beta.threads.runs.createAndPoll(
       threadId,
@@ -176,6 +198,9 @@ export async function runAssistantWithoutStream(threadId: string, assistantId: s
 }
 
 export async function createThreadAndRun(assistantId: string, messages: { role: string, content: string }[]) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const run = await openai.beta.threads.createAndRun({
       assistant_id: assistantId,
@@ -187,7 +212,6 @@ export async function createThreadAndRun(assistantId: string, messages: { role: 
       },
     });
 
-    // Handle the response object
     const runDetails = {
       id: run.id,
       object: run.object,
@@ -226,10 +250,12 @@ export async function createThreadAndRun(assistantId: string, messages: { role: 
 }
 
 export async function deleteThread(threadId: string) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const response = await openai.beta.threads.del(threadId);
 
-    // Handle the response object
     const deleteDetails = {
       id: response.id,
       object: response.object,
@@ -244,6 +270,9 @@ export async function deleteThread(threadId: string) {
 }
 
 export async function createThreadAndRunWithStream(assistantId: string, messages: { role: string, content: string }[], onUpdate: (event: any) => void) {
+  if (!openai) {
+    throw new Error('OpenAI client not initialized');
+  }
   try {
     const stream = await openai.beta.threads.createAndRun({
       assistant_id: assistantId,
