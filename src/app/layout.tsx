@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { Inter } from 'next/font/google';
 import StoreProvider from './StoreProvider';
 import './globals.css';
-import { monitorAuthState } from '../services/firebase';
+import { monitorAuthState } from '../services/authService';
 import store from '../store';
 
 const inter = Inter({ subsets: ["latin"] });

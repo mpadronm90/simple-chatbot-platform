@@ -36,7 +36,7 @@ The platform follows this relational structure:
    - Has one: AI Agent
    - Has many: Threads
 3. User
-   - Belongs to: Admin
+   - Has many: Admin
    - Has many: Threads
 4. Thread
    - Belongs to: Chatbot, User
@@ -109,41 +109,51 @@ firebase-root
 src/
 ├── app/
 │   ├── admin/
-│   │   ├── login/
+│   │   ├── auth/
 │   │   │   └── page.tsx
 │   │   └── page.tsx
 │   ├── chatbot/
+│   │   ├── auth/
+│   │   │   └── page.tsx
 │   │   └── [id]/
 │   │       └── page.tsx
 │   ├── layout.tsx
-│   └── page.tsx
+│   ├── page.tsx
+│   └── StoreProvider.tsx
 ├── components/
 │   ├── admin/
 │   │   ├── AdminDashboard.tsx
+│   │   ├── AdminHeader.tsx
 │   │   ├── AgentManagement.tsx
 │   │   ├── ChatbotForm.tsx
-│   │   ├── ChatbotList.tsx
-│   │   └── withAdminAuth.tsx
-│   ├── chatbot/
-│   │   ├── AgentSelector.tsx
-│   │   ├── AppearanceSettings.tsx
-│   │   ├── ChatbotConfig.tsx
-│   │   └── ChatbotPreview.tsx
-│   └── user/
-│       ├── ChatInterface.tsx
+│   │   └── ChatbotList.tsx
+│   ├── auth/
+│   │   └── withAuth.tsx
+│   └── chatbot/
+│       ├── AgentSelector.tsx
+│       ├── AppearanceSettings.tsx
+│       ├── Chatbot.tsx
+│       ├── ChatbotConfig.tsx
+│       ├── ChatbotInterface.tsx
+│       ├── ChatbotPreview.tsx
+│       ├── LoginSignup.tsx
 │       ├── MessageInput.tsx
 │       ├── MessageList.tsx
 │       └── ThreadSelector.tsx
 ├── config/
 │   └── firebase.ts
+├── services/
+│   ├── authService.ts
+│   ├── chatbotService.tsx
+│   ├── firebase.ts
+│   └── openai.ts
 ├── store/
 │   ├── agentsSlice.ts
 │   ├── authSlice.ts
 │   ├── chatbotsSlice.ts
 │   ├── index.ts
+│   ├── rootReducer.ts
 │   └── threadsSlice.ts
-└── utils/
-    └── openai.ts
 ````
 
 ## Setup and Installation

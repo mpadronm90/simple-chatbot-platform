@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentThread, Thread } from '../../store/threadsSlice';
-import { RootState } from '../../store';
-import { ref, onValue } from 'firebase/database';
-import { realtimeDb } from '../../services/firebase';
+import { setCurrentThread, fetchThreads, Thread } from '../../store/threadsSlice';
+import { RootState, AppDispatch } from '../../store';
 
 interface ThreadSelectorProps {
   chatbotId: string;
@@ -12,25 +10,11 @@ interface ThreadSelectorProps {
 }
 
 const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId, userId, adminId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const threads = useSelector((state: RootState) => state.threads.threads);
 
   useEffect(() => {
-    const fetchThreads = async () => {
-      const threadsRef = ref(realtimeDb, 'threads');
-      onValue(threadsRef, (snapshot) => {
-        const fetchedThreads: Thread[] = [];
-        snapshot.forEach((childSnapshot) => {
-          const thread = childSnapshot.val();
-          if (thread.chatbotId === chatbotId && thread.userId === userId && thread.adminId === adminId) {
-            fetchedThreads.push({ id: childSnapshot.key, ...thread });
-          }
-        });
-        dispatch(setCurrentThread(fetchedThreads[0] || null));
-      });
-    };
-
-    fetchThreads();
+    dispatch(fetchThreads({ userId, chatbotId, adminId }));
   }, [chatbotId, userId, adminId, dispatch]);
 
   return (

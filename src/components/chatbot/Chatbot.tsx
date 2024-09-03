@@ -2,14 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
-import { addMessageToCurrentThread, setCurrentThread, Message, Thread } from '../../store/threadsSlice';
+import { AppDispatch, RootState } from '../../store';
+import { 
+  addMessageToCurrentThread, 
+  setCurrentThread, 
+  fetchThreads, 
+  addMessageToThread, 
+  runAssistantWithStream,
+  Message 
+} from '../../store/threadsSlice';
 import MessageList from '../chatbot/MessageList';
 import MessageInput from '../chatbot/MessageInput';
 import ThreadSelector from '../chatbot/ThreadSelector';
-import { addMessage, runAssistantWithStream, runAssistantWithoutStream } from '../../services/openai';
-import { ref, onValue, push, set } from 'firebase/database';
-import { realtimeDb } from '../../services/firebase';
 
 interface ChatbotProps {
   chatbotId: string;
@@ -18,7 +22,7 @@ interface ChatbotProps {
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const currentThread = useSelector((state: RootState) => state.threads.currentThread);
   const chatbot = useSelector((state: RootState) => 
     state.chatbots.chatbots.find(bot => bot.id === chatbotId)
@@ -26,16 +30,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    dispatch(fetchThreads({ userId, chatbotId, adminId }));
+  }, [dispatch, userId, chatbotId, adminId]);
+
+  useEffect(() => {
     if (currentThread) {
-      const messagesRef = ref(realtimeDb, `threads/${currentThread.id}/messages`);
-      onValue(messagesRef, (snapshot) => {
-        const messages: Message[] = [];
-        snapshot.forEach((childSnapshot) => {
-          const message = childSnapshot.val();
-          messages.push(message);
-        });
-        dispatch(setCurrentThread({ ...currentThread, messages }));
-      });
+      dispatch(setCurrentThread(currentThread));
     }
   }, [currentThread, dispatch]);
 
@@ -44,7 +44,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
 
     setIsLoading(true);
     try {
-      const message: Message = {
+      const userMessage: Message = {
         id: `${Date.now()}`,
         object: 'message',
         created: Date.now(),
@@ -52,27 +52,29 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
         content: content,
         content_type: 'text'
       };
-      const newMessageRef = push(ref(realtimeDb, `threads/${currentThread.id}/messages`));
-      await set(newMessageRef, message);
-      dispatch(addMessageToCurrentThread(message));
+      
+      await dispatch(addMessageToThread({
+        threadId: currentThread.id,
+        content: content,
+        userId: userId
+      }));
 
-      if (true) { // Assuming useStreaming is always true for simplicity
-        let streamedContent = '';
-        await runAssistantWithStream(currentThread.id, chatbot.agentId, (update) => {
-          streamedContent += update;
-          const botMessage: Message = {
-            id: `${Date.now()}`,
-            object: 'message' as const,
-            created: Date.now(),
-            role: 'assistant',
-            content: streamedContent,
-            content_type: 'text'
-          };
-          const newBotMessageRef = push(ref(realtimeDb, `threads/${currentThread.id}/messages`));
-          set(newBotMessageRef, botMessage);
-          dispatch(addMessageToCurrentThread(botMessage));
-        });
-      } 
+      const botMessage: Message = {
+        id: `${Date.now() + 1}`,
+        object: 'message',
+        created: Date.now() + 1,
+        role: 'assistant',
+        content: '',
+        content_type: 'text'
+      };
+      dispatch(addMessageToCurrentThread(botMessage));
+
+      // Run the assistant with streaming
+      await dispatch(runAssistantWithStream({
+        threadId: currentThread.id,
+        assistantId: chatbot.agentId,
+        userId: userId
+      }));
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {

@@ -72,9 +72,9 @@ const AdminAuthPage: React.FC = () => {
   };
 
   return (
-    <div className="container flex justify-center items-center min-h-screen">
-      <div className="admin-auth w-full max-w-md p-6 bg-black text-white rounded-lg">
-        <h2 className="text-2xl mb-6">{isSignUp ? 'Admin Sign Up' : 'Admin Login'}</h2>
+    <div className="container flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">{isSignUp ? 'Admin Sign Up' : 'Admin Login'}</h2>
         <form onSubmit={handleAuth} className="space-y-4">
           {validationError && <p className="text-red-500">{validationError}</p>}
           {error && <p className="text-red-500">{error}</p>}
@@ -85,7 +85,7 @@ const AdminAuthPage: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onFocus={() => { setValidationError(null); setError(null); setSuccessMessage(null); }}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="password"
@@ -93,17 +93,17 @@ const AdminAuthPage: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onFocus={() => { setValidationError(null); setError(null); setSuccessMessage(null); }}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button type="submit" className="w-full p-2 bg-white text-black rounded">
+          <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200">
             {isSignUp ? 'Sign Up' : 'Login'}
           </button>
         </form>
-        <p className="mt-4 text-center">
+        <p className="mt-4 text-center text-gray-600">
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="text-blue-500 ml-2"
+            className="text-blue-500 ml-2 hover:underline"
           >
             {isSignUp ? 'Login' : 'Sign Up'}
           </button>

@@ -7,11 +7,13 @@ interface AuthState {
     // Add other necessary fields
   } | null;
   isAuthenticated: boolean;
+  authChecked: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
+  authChecked: false
 };
 
 const authSlice = createSlice({
@@ -23,6 +25,7 @@ const authSlice = createSlice({
     },
     setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
+      state.authChecked = true;
     },
   },
 });
