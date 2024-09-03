@@ -7,10 +7,10 @@ export const getChatbotById = async (chatbotId: string) => {
   return chatbotSnapshot.exists() ? chatbotSnapshot.val() : null;
 };
 
-export const saveChatbotConfig = async (chatbotId: string, config: { name: string; description: string; avatarUrl: string; styles: { [key: string]: string } }) => {
-  const chatbotRef = ref(realtimeDb, `chatbots/${chatbotId}`);
-  await set(chatbotRef, config);
-};
+// export const saveChatbotConfig = async (chatbotId: string, config: { name: string; description: string; avatarUrl: string; styles: { [key: string]: string } }) => {
+//   const chatbotRef = ref(realtimeDb, `chatbots/${chatbotId}`);
+//   await set(chatbotRef, config);
+// };
 
 export const linkUserWithAdmin = async (userId: string, adminId: string) => {
   const userRef = ref(realtimeDb, `users/${userId}`);

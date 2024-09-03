@@ -25,12 +25,6 @@ if (!app) {
 
 const db = getDatabase(app);
 
-// if (process.env.NODE_ENV === 'development' && process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
-//   const [host, port] = process.env.FIREBASE_DATABASE_EMULATOR_HOST.split(':');
-//   connectDatabaseEmulator(db, host, parseInt(port));
-//   console.log(`Connected to Firebase Database emulator on ${host}:${port}`);
-// }
-
 console.log('Database reference obtained');
 
 // Test database connection

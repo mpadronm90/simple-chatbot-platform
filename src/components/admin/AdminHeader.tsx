@@ -2,20 +2,24 @@
 
 import React from 'react';
 import handleLogout from '../../services/authService';
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const AdminHeader: React.FC = () => {
   return (
-    <header className="bg-gray-800 text-white shadow-md">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Admin Portal</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition duration-300 ease-in-out"
-        >
-          Logout
-        </button>
-      </div>
-    </header>
+    <Card className="bg-gray-800 text-white shadow-md">
+      <CardHeader className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <CardTitle className="text-2xl font-bold">Admin Portal</CardTitle>
+        <CardContent className="p-0">
+          <Button
+            onClick={handleLogout}
+            variant="destructive"
+          >
+            Logout
+          </Button>
+        </CardContent>
+      </CardHeader>
+    </Card>
   );
 };
 

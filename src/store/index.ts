@@ -1,8 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './rootReducer';
+import chatbotsReducer from './chatbotsSlice';
+import authReducer from './authSlice';
+import agentsReducer from './agentsSlice';
+import threadsReducer from './threadsSlice';
 
-const store = configureStore({
-  reducer: rootReducer,
+export const store = configureStore({
+  reducer: {
+    chatbots: chatbotsReducer,
+    auth: authReducer,
+    agents: agentsReducer,
+    threads: threadsReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

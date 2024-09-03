@@ -14,6 +14,12 @@ import {
 import MessageList from '../chatbot/MessageList';
 import MessageInput from '../chatbot/MessageInput';
 import ThreadSelector from '../chatbot/ThreadSelector';
+import { Send } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ChatbotProps {
   chatbotId: string;
@@ -28,6 +34,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
     state.chatbots.chatbots.find(bot => bot.id === chatbotId)
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState('');
 
   useEffect(() => {
     dispatch(fetchThreads({ userId, chatbotId, adminId }));
@@ -44,32 +51,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
 
     setIsLoading(true);
     try {
-      const userMessage: Message = {
-        id: `${Date.now()}`,
-        object: 'message',
-        created: Date.now(),
-        role: 'user',
-        content: content,
-        content_type: 'text'
-      };
-      
       await dispatch(addMessageToThread({
         threadId: currentThread.id,
         content: content,
         userId: userId
       }));
 
-      const botMessage: Message = {
-        id: `${Date.now() + 1}`,
-        object: 'message',
-        created: Date.now() + 1,
-        role: 'assistant',
-        content: '',
-        content_type: 'text'
-      };
-      dispatch(addMessageToCurrentThread(botMessage));
-
-      // Run the assistant with streaming
       await dispatch(runAssistantWithStream({
         threadId: currentThread.id,
         assistantId: chatbot.agentId,
@@ -82,20 +69,46 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
     }
   };
 
-  const chatbotStyles = chatbot?.styles || {};
+  const chatbotStyles = chatbot?.appearance || {};
 
   return (
-    <div className="chat-interface" style={chatbotStyles}>
-      {chatbot ? (
-        <>
-          <ThreadSelector chatbotId={chatbotId} userId={userId} adminId={adminId} />
-          {currentThread && <MessageList messages={currentThread.messages} threadId={currentThread.id} userId={userId} />}
-          {currentThread && <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} threadId={currentThread.id} userId={userId} />}
-        </>
-      ) : (
-        <p>Chatbot does not exist</p>
-      )}
-    </div>
+    <Card className="w-full max-w-md mx-auto h-[600px] flex flex-col" style={chatbotStyles}>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">{chatbot ? chatbot.name : 'Chatbot'}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow overflow-hidden">
+        <ScrollArea className="h-full pr-4">
+          {currentThread && currentThread.messages.map((message) => (
+            <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+              <div className={`flex items-start ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <Avatar className="w-8 h-8">
+                  <AvatarFallback>{message.role === 'user' ? 'U' : 'B'}</AvatarFallback>
+                  <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
+                </Avatar>
+                <div className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+                  {message.content}
+                </div>
+              </div>
+            </div>
+          ))}
+        </ScrollArea>
+      </CardContent>
+      <CardFooter>
+        <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(input); setInput(''); }} className="flex w-full space-x-2">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your message..."
+            className="flex-grow"
+            disabled={isLoading}
+          />
+          <Button type="submit" size="icon" disabled={isLoading}>
+            <Send className="h-4 w-4" />
+            <span className="sr-only">Send message</span>
+          </Button>
+        </form>
+      </CardFooter>
+    </Card>
   );
 };
 

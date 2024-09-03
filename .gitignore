@@ -33,7 +33,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 
 .cursorignore
@@ -45,3 +44,5 @@ next-env.d.ts
 database-debug.log*
 firestore-debug.log*
 firebase-debug.log*
+
+ui-debug.log*

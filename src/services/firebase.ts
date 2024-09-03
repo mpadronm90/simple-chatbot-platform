@@ -4,6 +4,7 @@ import { getDatabase, connectDatabaseEmulator, ref, set, remove, get, child } fr
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { Agent } from '../store/agentsSlice';
 import { Thread } from '../store/threadsSlice';
+import { Chatbot } from '../store/chatbotsSlice';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -44,8 +45,7 @@ export const getAgentsFromFirebase = async (userId: string) => {
 	if (snapshot.exists()) {
 		return Object.entries(snapshot.val()).map(([id, data]) => ({
 			id,
-			...(data as { name: string; description: string; instructions: string }),
-			ownerId: userId,
+			...(data as Omit<Agent, 'id'>),
 		}));
 	}
 	return [];
@@ -68,6 +68,33 @@ export const getThreadsFromFirebase = async (userId: string) => {
 		return Object.entries(snapshot.val()).map(([id, data]) => ({
 			...(data as Thread),
 			id, // Move id to the end to ensure it overwrites any id from data
+		}));
+	}
+	return [];
+};
+
+export const addChatbotToFirebase = async (chatbot: Chatbot) => {
+	const chatbotRef = ref(realtimeDb, `chatbots/${chatbot.ownerId}/${chatbot.id}`);
+	await set(chatbotRef, chatbot);
+};
+
+export const removeChatbotFromFirebase = async (chatbotId: string, ownerId: string) => {
+	const chatbotRef = ref(realtimeDb, `chatbots/${ownerId}/${chatbotId}`);
+	await remove(chatbotRef);
+};
+
+export const updateChatbotInFirebase = async (chatbot: Chatbot) => {
+	const chatbotRef = ref(realtimeDb, `chatbots/${chatbot.ownerId}/${chatbot.id}`);
+	await set(chatbotRef, chatbot);
+};
+
+export const getChatbotsFromFirebase = async (userId: string) => {
+	const chatbotsRef = ref(realtimeDb, `chatbots/${userId}`);
+	const snapshot = await get(child(chatbotsRef, '/'));
+	if (snapshot.exists()) {
+		return Object.entries(snapshot.val()).map(([id, data]) => ({
+			id,
+			...(data as Omit<Chatbot, 'id'>),
 		}));
 	}
 	return [];
