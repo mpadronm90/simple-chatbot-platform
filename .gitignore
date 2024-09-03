@@ -39,3 +39,9 @@ next-env.d.ts
 .cursorignore
 
 /assets
+
+
+# Firebase debug logs
+database-debug.log*
+firestore-debug.log*
+firebase-debug.log*

@@ -1,31 +1,56 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { initializeApp, getApps, cert, applicationDefault } from 'firebase-admin/app';
+import { initializeApp, getApps } from 'firebase-admin/app';
 import { getDatabase } from 'firebase-admin/database';
 import { APIAction } from '@/services/api';
 
+let app = getApps()[0];
 // Initialize Firebase Admin SDK
-if (!getApps().length) {
-  
+if (!app) {
+  console.log('Initializing Firebase app');
   const firebaseConfig = {
     projectId: process.env.FIREBASE_PROJECT_ID,
     databaseURL: process.env.FIREBASE_DATABASE_URL,
   };
+  console.log('Firebase config:', firebaseConfig);
 
-  initializeApp({
-    ...firebaseConfig,
-    credential: applicationDefault(),
-  });
+  try {
+    app = initializeApp(firebaseConfig);
+    console.log('Firebase app initialized successfully');
+  } catch (error) {
+    console.error('Error initializing Firebase app:', error);
+    throw error;
+  }
 }
 
-const db = getDatabase();
+const db = getDatabase(app);
+
+// if (process.env.NODE_ENV === 'development' && process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
+//   const [host, port] = process.env.FIREBASE_DATABASE_EMULATOR_HOST.split(':');
+//   connectDatabaseEmulator(db, host, parseInt(port));
+//   console.log(`Connected to Firebase Database emulator on ${host}:${port}`);
+// }
+
+console.log('Database reference obtained');
+
+// Test database connection
+db.ref('.info/connected').on('value', (snapshot) => {
+  if (snapshot.val() === true) {
+    console.log('Connected to Firebase');
+  } else {
+    console.log('Not connected to Firebase');
+  }
+});
+
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(request: Request) {
   const { action, data } = await request.json();
+  console.log('Received action:', action, 'with data:', data);
 
   switch (action) {
     case APIAction.CREATE_ASSISTANT:
+      console.log('Calling createAssistant');
       return createAssistant(data);
     case APIAction.GET_AGENTS:
       return getAgents(data);
@@ -45,29 +70,37 @@ export async function POST(request: Request) {
 }
 
 async function createAssistant(data: { name: string, description: string, instructions: string, userId: string }) {
+  console.log('Creating assistant with data:', data);
   const assistant = await openai.beta.assistants.create({
     name: data.name,
     description: data.description,
     instructions: data.instructions,
     model: "gpt-4-turbo-preview",
   });
+  console.log('Assistant created in OpenAI:', assistant.id);
 
   try {
-    await db.ref(`agents/${data.userId}/${assistant.id}`).set({
+    console.log('Attempting to save assistant to database...');
+    const assistantData = {
       id: assistant.id,
       name: assistant.name,
       description: assistant.description,
       instructions: assistant.instructions,
       ownerId: data.userId,
-    });
+    };
+    const updates: { [key: string]: any } = {};
+    updates[`agents/${data.userId}/${assistant.id}`] = assistantData;
+
+    await db.ref().update(updates);
     console.log('Assistant saved to database:', assistant.id);
   } catch (error) {
     console.error('Error saving assistant to database:', error);
-    // Optionally, you might want to delete the assistant from OpenAI if the database write fails
+    console.error('Error details:', JSON.stringify(error, null, 2));
     await openai.beta.assistants.del(assistant.id);
     throw error;
   }
 
+  console.log('Returning response');
   return NextResponse.json(assistant);
 }
 
