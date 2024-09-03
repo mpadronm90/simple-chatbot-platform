@@ -1,33 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from 'firebase/auth'; // Add this import
 
 interface AuthState {
+  user: {
+    uid: string | null;
+    email: string | null;
+    // Add other necessary fields
+  } | null;
   isAuthenticated: boolean;
-  user: User | null; // Update the type here
-  role: 'admin' | 'user' | null;
-  adminId: string | null;
 }
 
 const initialState: AuthState = {
-  isAuthenticated: false, // Add this line
   user: null,
-  role: null,
-  adminId: null,
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<User | null>) {
+    setUser: (state, action: PayloadAction<AuthState['user']>) => {
       state.user = action.payload;
     },
-    setUserRole(state, action: PayloadAction<{ role: 'admin' | 'user' | null; adminId: string | null }>) {
-      state.role = action.payload.role;
-      state.adminId = action.payload.adminId;
+    setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
     },
   },
 });
 
-export const { setUser, setUserRole } = authSlice.actions;
+export const { setUser, setIsAuthenticated } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ref, set } from 'firebase/database';
-import { realtimeDb } from '../../config/firebase';
+import { realtimeDb } from '../../services/firebase';
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void;

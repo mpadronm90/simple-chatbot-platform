@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Message } from '../../store/threadsSlice';
 import { ref, set } from 'firebase/database';
-import { realtimeDb } from '../../config/firebase';
+import { realtimeDb } from '../../services/firebase';
 
 interface MessageListProps {
   messages: Message[];

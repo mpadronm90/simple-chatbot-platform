@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentThread, Thread } from '../../store/threadsSlice';
 import { RootState } from '../../store';
 import { ref, onValue } from 'firebase/database';
-import { realtimeDb } from '../../config/firebase';
+import { realtimeDb } from '../../services/firebase';
 
 interface ThreadSelectorProps {
   chatbotId: string;

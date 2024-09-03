@@ -11,13 +11,13 @@ import { addMessage, runAssistantWithStream, runAssistantWithoutStream } from '.
 import { ref, onValue, push, set } from 'firebase/database';
 import { realtimeDb } from '../../services/firebase';
 
-interface ChatbotProps {
+interface ChatInterfaceProps {
   chatbotId: string;
   userId: string;
   adminId: string;
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ chatbotId, userId, adminId }) => {
   const dispatch = useDispatch();
   const currentThread = useSelector((state: RootState) => state.threads.currentThread);
   const chatbot = useSelector((state: RootState) => 
@@ -79,22 +79,13 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId, adminId }) => {
       setIsLoading(false);
     }
   };
-
-  const chatbotStyles = chatbot?.styles || {};
-
   return (
-    <div className="chat-interface" style={chatbotStyles}>
-      {chatbot ? (
-        <>
-          <ThreadSelector chatbotId={chatbotId} userId={userId} adminId={adminId} />
-          {currentThread && <MessageList messages={currentThread.messages} threadId={currentThread.id} userId={userId} />}
-          {currentThread && <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} threadId={currentThread.id} userId={userId} />}
-        </>
-      ) : (
-        <p>Chatbot does not exist</p>
-      )}
+    <div className="chat-interface">
+      <ThreadSelector chatbotId={chatbotId} userId={userId} adminId={adminId} />
+      {currentThread && <MessageList messages={currentThread.messages} threadId={currentThread.id} userId={userId} />}
+      <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} threadId={currentThread?.id ?? ''} userId={userId} />
     </div>
   );
-};
+}
 
-export default Chatbot;
+export default ChatInterface;

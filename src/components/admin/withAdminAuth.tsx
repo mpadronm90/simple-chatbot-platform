@@ -12,7 +12,7 @@ const withAdminAuth = (WrappedComponent: React.FC) => {
     }, []);
 
     useEffect(() => {
-      if (isMounted && !isAuthenticated) {
+      if (isMounted && (!isAuthenticated)) {
         window.location.href = '/admin/auth?type=login';
       }
     }, [isMounted, isAuthenticated]);

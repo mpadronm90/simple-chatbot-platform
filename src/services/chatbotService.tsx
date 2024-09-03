@@ -1,5 +1,5 @@
 import { ref, get, set } from 'firebase/database';
-import { realtimeDb } from '../config/firebase';
+import { realtimeDb } from './firebase';
 
 export const getChatbotById = async (chatbotId: string) => {
   const chatbotRef = ref(realtimeDb, `chatbots/${chatbotId}`);

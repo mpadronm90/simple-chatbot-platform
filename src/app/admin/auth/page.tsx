@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUser, setUserRole } from '../../../store/authSlice';
+import { useSelector } from 'react-redux';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ref, set, get } from 'firebase/database';
-import { auth, realtimeDb } from '../../../config/firebase';
+import { auth } from '../../../services/firebase';
 import { RootState } from '../../../store';
 
 const AdminAuthPage: React.FC = () => {
@@ -15,24 +13,19 @@ const AdminAuthPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isSignUp, setIsSignUp] = useState(true); // Toggle between login and sign-up
-  const dispatch = useDispatch();
+  const [isSignUp, setIsSignUp] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const type = searchParams.get('type');
-    if (type === 'login') {
-      setIsSignUp(false);
-    } else if (type === 'signup') {
-      setIsSignUp(true);
-    }
+    setIsSignUp(type === 'signup');
   }, [searchParams]);
 
   useEffect(() => {
     if (user) {
-      router.push('/admin'); // Redirect to admin page if user is authenticated
+      router.push('/admin');
     }
   }, [user, router]);
 
@@ -42,7 +35,6 @@ const AdminAuthPage: React.FC = () => {
     setValidationError(null);
     setSuccessMessage(null);
 
-    // Basic validation
     if (!email || !password) {
       setValidationError('Email and password are required.');
       return;
@@ -54,29 +46,15 @@ const AdminAuthPage: React.FC = () => {
 
     try {
       if (isSignUp) {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await set(ref(realtimeDb, `users/${userCredential.user.uid}`), {
-          email: userCredential.user.email,
-          role: 'admin', // Set role as 'admin'
-        });
+        await createUserWithEmailAndPassword(auth, email, password);
         setSuccessMessage('Sign up successful! Please log in.');
         setIsSignUp(false);
       } else {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const userRef = ref(realtimeDb, `users/${userCredential.user.uid}`);
-        const userSnapshot = await get(userRef);
-        if (userSnapshot.exists()) {
-          const userData = userSnapshot.val();
-          if (userData.role !== 'admin') {
-            setError('You do not have admin privileges.');
-            return;
-          }
-          router.push('/admin'); // Redirect to admin page after login
-        } else {
-          setError('User data not found.');
-        }
+        await signInWithEmailAndPassword(auth, email, password);
+        router.push('/admin');
       }
     } catch (error: any) {
+      console.error('Authentication error:', error);
       if (error.code === 'auth/user-not-found') {
         setError('No user found with this email.');
       } else if (error.code === 'auth/wrong-password') {
@@ -90,7 +68,6 @@ const AdminAuthPage: React.FC = () => {
       } else {
         setError('Error during authentication. Please try again.');
       }
-      console.error('Error during authentication:', error);
     }
   };
 
