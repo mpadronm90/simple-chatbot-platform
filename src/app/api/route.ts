@@ -131,13 +131,19 @@ async function createThread(data: { userId: string, chatbotId: string }) {
   return NextResponse.json(threadData);
 }
 
-async function addMessage(data: { threadId: string, content: string, userId: string }) {
+async function addMessage(data: { threadId: string, content: string }) {
   const message = await openai.beta.threads.messages.create(data.threadId, {
     role: "user",
     content: data.content,
   });
 
-  await db.ref(`threads/${data.threadId}/messages`).push(message);
+  const messageData = {
+    role: message.role,
+    content: data.content,
+    created: Date.now(),
+  }
+
+  await db.ref(`threads/${data.threadId}/messages`).push(messageData);
 
   return NextResponse.json(message);
 }
@@ -195,6 +201,11 @@ async function runAssistantWithStream(data: { threadId: string; assistantId: str
       'Connection': 'keep-alive',
     },
   });
+}
+
+// get last messages from firebase
+async function getThreadMessages(threadId: string) {
+
 }
 
 async function getThreadsByUser(userId: string) {

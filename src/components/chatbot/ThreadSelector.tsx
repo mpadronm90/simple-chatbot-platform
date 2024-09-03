@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentThread, fetchThreads, Thread } from '../../store/threadsSlice';
+import { setCurrentThread, fetchThreads } from '../../store/threadsSlice';
 import { RootState, AppDispatch } from '../../store';
 
 interface ThreadSelectorProps {
@@ -9,13 +9,13 @@ interface ThreadSelectorProps {
   adminId: string;
 }
 
-const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId, userId, adminId }) => {
+const ThreadSelector: React.FC<ThreadSelectorProps> = ({ chatbotId, userId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const threads = useSelector((state: RootState) => state.threads.threads);
 
   useEffect(() => {
-    dispatch(fetchThreads({ userId, chatbotId, adminId }));
-  }, [chatbotId, userId, adminId, dispatch]);
+    dispatch(fetchThreads({ userId, chatbotId }));
+  }, [chatbotId, userId, dispatch]);
 
   return (
     <div className="thread-selector">

@@ -2,9 +2,6 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { callAPI, APIAction } from '../services/api';
 
 export interface Message {
-  id: string;
-  object: 'message';
-  created: number; // Unix timestamp
   role: 'system' | 'user' | 'assistant';
   content: string;
   content_type: 'text' | 'image' | 'audio' | 'video' | 'file';
@@ -15,7 +12,8 @@ export interface Thread {
   id: string;
   userId: string;
   chatbotId: string;
-  messages: Message[];
+  messages: { [key: string]: Message };
+  createdAt: number;
 }
 
 interface ThreadsState {
@@ -44,8 +42,8 @@ export const createThread = createAsyncThunk(
 
 export const addMessageToThread = createAsyncThunk(
   'threads/addMessageToThread',
-  async ({ threadId, content, userId }: { threadId: string; content: string; userId: string }) => {
-    return await callAPI(APIAction.ADD_MESSAGE, { threadId, content, userId });
+  async ({ threadId, content }: { threadId: string; content: string; }) => {
+    return await callAPI(APIAction.ADD_MESSAGE, { threadId, content });
   }
 );
 
@@ -67,12 +65,12 @@ export const runAssistantWithStream = createAsyncThunk(
         accumulatedContent += chunk;
 
         // Dispatch an action to update the current thread with the accumulated content
-        dispatch(updateAssistantMessage({ threadId, content: accumulatedContent }));
+        // dispatch(updateAssistantMessage({ threadId, content: accumulatedContent }));
       }
     }
 
     // After streaming is complete, fetch updated messages
-    dispatch(fetchThreadMessages({ threadId }));
+    //dispatch(fetchThreadMessages({ threadId }));
 
     return { threadId };
   }
@@ -83,6 +81,25 @@ export const fetchThreadMessages = createAsyncThunk(
   'threads/fetchThreadMessages',
   async ({ threadId }: { threadId: string }) => {
     return await callAPI(APIAction.GET_THREAD_MESSAGES, { threadId });
+  }
+);
+
+export const fetchAndSetThreads = createAsyncThunk(
+  'threads/fetchAndSetThreads',
+  async ({ userId, chatbotId }: { userId: string; chatbotId: string }, { dispatch, getState }) => {
+    const state = getState() as { threads: ThreadsState };
+    if (state.threads.threads.length === 0) {
+      const fetchedThreads = await callAPI(APIAction.GET_THREADS, { userId, chatbotId });
+      if (fetchedThreads.length > 0) {
+        dispatch(setCurrentThread(fetchedThreads[0]));
+        return fetchedThreads;
+      } else {
+        const newThread = await callAPI(APIAction.CREATE_THREAD, { userId, chatbotId });
+        dispatch(setCurrentThread(newThread));
+        return [newThread];
+      }
+    }
+    return state.threads.threads;
   }
 );
 
@@ -108,25 +125,29 @@ const threadsSlice = createSlice({
     setCurrentThread: (state, action: PayloadAction<Thread | null>) => {
       state.currentThread = action.payload;
     },
-    addMessageToCurrentThread: (state, action: PayloadAction<Message>) => {
+    addMessageToCurrentThread: (state, action: PayloadAction<{ messageId: string; message: Message }>) => {
       if (state.currentThread) {
-        state.currentThread.messages.push(action.payload);
+        state.currentThread.messages[action.payload.messageId] = action.payload.message;
       }
     },
-    updateAssistantMessage: (state, action: PayloadAction<{ threadId: string; content: string }>) => {
-      const { threadId, content } = action.payload;
+    updateAssistantMessage: (state, action: PayloadAction<{ threadId: string; messageId: string; content: string }>) => {
+      const { threadId, messageId, content } = action.payload;
+      const thread = state.threads.find(t => t.id === threadId);
+      if (thread && thread.messages[messageId]) {
+        thread.messages[messageId].content = content;
+      }
+      if (state.currentThread && state.currentThread.id === threadId && state.currentThread.messages[messageId]) {
+        state.currentThread.messages[messageId].content = content;
+      }
+    },
+    updateThreadMessages: (state, action: PayloadAction<{ threadId: string; messages: { [key: string]: Message } }>) => {
+      const { threadId, messages } = action.payload;
       const thread = state.threads.find(t => t.id === threadId);
       if (thread) {
-        const lastMessage = thread.messages[thread.messages.length - 1];
-        if (lastMessage && lastMessage.role === 'assistant') {
-          lastMessage.content = content;
-        }
+        thread.messages = messages;
       }
       if (state.currentThread && state.currentThread.id === threadId) {
-        const lastMessage = state.currentThread.messages[state.currentThread.messages.length - 1];
-        if (lastMessage && lastMessage.role === 'assistant') {
-          lastMessage.content = content;
-        }
+        state.currentThread.messages = messages;
       }
     },
   },
@@ -142,10 +163,10 @@ const threadsSlice = createSlice({
       .addCase(addMessageToThread.fulfilled, (state, action) => {
         const thread = state.threads.find(t => t.id === action.payload.threadId);
         if (thread) {
-          thread.messages.push(action.payload.message);
+          thread.messages[action.payload.messageId] = action.payload.message;
         }
         if (state.currentThread && state.currentThread.id === action.payload.threadId) {
-          state.currentThread.messages.push(action.payload.message);
+          state.currentThread.messages[action.payload.messageId] = action.payload.message;
         }
       })
       .addCase(runAssistantWithStream.fulfilled, (state, action) => {
@@ -159,6 +180,9 @@ const threadsSlice = createSlice({
         if (state.currentThread && state.currentThread.id === action.payload.threadId) {
           state.currentThread.messages = action.payload.messages;
         }
+      })
+      .addCase(fetchAndSetThreads.fulfilled, (state, action) => {
+        state.threads = action.payload;
       });
   },
 });
@@ -170,7 +194,8 @@ export const {
   removeThread, 
   setCurrentThread, 
   addMessageToCurrentThread,
-  updateAssistantMessage 
+  updateAssistantMessage,
+  updateThreadMessages 
 } = threadsSlice.actions;
 
 export default threadsSlice.reducer;

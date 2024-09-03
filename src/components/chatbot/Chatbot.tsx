@@ -3,15 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { 
-  addMessageToCurrentThread, 
-  setCurrentThread, 
-  fetchThreads, 
+import {
+  fetchAndSetThreads, 
   addMessageToThread, 
   runAssistantWithStream,
-  Message 
+  updateThreadMessages
 } from '../../store/threadsSlice';
-import { createThread } from '../../store/threadsSlice';
+import { ref, onValue, off } from 'firebase/database';
+import { realtimeDb } from '../../services/firebase'; // Adjust this import based on your Firebase setup
 import { Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,54 +33,44 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
   const [input, setInput] = useState('');
 
   useEffect(() => {
-    if (userId) {
-      dispatch(fetchThreads({ userId, chatbotId })).then((action) => {
-        if (fetchThreads.fulfilled.match(action)) {
-          const threads = action.payload;
-          if (threads.length > 0) {
-            dispatch(setCurrentThread(threads[0]));
-          } else {
-            dispatch(createThread({ userId, chatbotId })).then((newThreadAction) => {
-              if (createThread.fulfilled.match(newThreadAction)) {
-                dispatch(setCurrentThread(newThreadAction.payload));
-              }
-            });
-          }
-        }
-      });
+    if(!chatbot) {
       dispatch(fetchSelectedChatbot(chatbotId));
     }
-  }, [dispatch, userId, chatbotId]);
+    if (!currentThread && userId && chatbotId) {
+      dispatch(fetchAndSetThreads({ userId, chatbotId }));
+    }
+  }, [dispatch, currentThread, userId, chatbotId, chatbot]);
 
   useEffect(() => {
     if (currentThread) {
-      dispatch(setCurrentThread(currentThread));
+      const threadRef = ref(realtimeDb, `threads/${currentThread.id}`);
+      
+      const onDataChange = (snapshot: any) => {
+        if (snapshot.exists()) {
+          const threadData = snapshot.val();
+          dispatch(updateThreadMessages({
+            threadId: threadData.id,
+            messages: threadData.messages
+          }));
+        }
+      };
+
+      onValue(threadRef, onDataChange);
+
+      return () => {
+        off(threadRef, 'value', onDataChange);
+      };
     }
-  }, [currentThread, dispatch]);
+  }, [dispatch, currentThread]);
 
   const handleSendMessage = async (content: string) => {
     setIsLoading(true);
     try {
       let threadToUse = currentThread;
 
-      if (!threadToUse) {
-        const newThreadAction = await dispatch(createThread({ userId, chatbotId }));
-        if (createThread.fulfilled.match(newThreadAction)) {
-          threadToUse = newThreadAction.payload;
-          dispatch(setCurrentThread(threadToUse));
-        } else {
-          throw new Error('Failed to create thread');
-        }
-      }
-
-      if (!threadToUse || !threadToUse.id) {
-        throw new Error('No valid thread available');
-      }
-
       await dispatch(addMessageToThread({
-        threadId: threadToUse.id,
-        content: content,
-        userId: userId
+        threadId: threadToUse?.id || '',
+        content: content
       }));
 
       if (!chatbot || !chatbot.agentId) {
@@ -89,7 +78,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
       }
 
       await dispatch(runAssistantWithStream({
-        threadId: threadToUse.id,
+        threadId: threadToUse?.id || '',
         assistantId: chatbot.agentId,
         userId: userId
       }));
@@ -102,6 +91,24 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
 
   const chatbotStyles = chatbot?.appearance || {};
 
+  const renderMessages = () => {
+    if (!currentThread || !currentThread.messages) return null;
+
+    return Object.entries(currentThread.messages).map(([messageId, message]) => (
+      <div key={messageId} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+        <div className={`flex items-start ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+          <Avatar className="w-8 h-8">
+            <AvatarFallback>{message.role === 'user' ? 'U' : 'B'}</AvatarFallback>
+            <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
+          </Avatar>
+          <div className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+            {message.content}
+          </div>
+        </div>
+      </div>
+    ));
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto h-[600px] flex flex-col" style={chatbotStyles}>
       <CardHeader>
@@ -111,19 +118,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden">
         <ScrollArea className="h-full pr-4">
-          {currentThread && currentThread.messages.map((message) => (
-            <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-              <div className={`flex items-start ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback>{message.role === 'user' ? 'U' : 'B'}</AvatarFallback>
-                  <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
-                </Avatar>
-                <div className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-                  {message.content}
-                </div>
-              </div>
-            </div>
-          ))}
+          {renderMessages()}
         </ScrollArea>
       </CardContent>
       <CardFooter>

@@ -32,14 +32,14 @@ const ChatbotEmbed: React.FC<ChatbotEmbedProps> = ({ chatbotId }) => {
   }
 
   if (!userId) {
-    return <div>User must be logged</div>;
+    return <div>User must be logged in</div>;
   }
 
   return (
     <div className="fixed bottom-8 right-4">
       {isOpen ? (
         <div className="bg-white rounded-lg shadow-lg w-[350px]">
-          <Chatbot chatbotId={chatbotId} userId={userId} />
+          <Chatbot chatbotId={chatbotId} userId={userId} adminId={chatbot.ownerId} />
           <Button
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             onClick={() => setIsOpen(false)}
