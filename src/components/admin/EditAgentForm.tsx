@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAgent } from '../../store/agentsSlice';
-import { RootState, AppDispatch } from '../../store';
+import { updateAgent } from '../../store/agentsSlice';
+import { AppDispatch, RootState } from '../../store';
+import { Agent } from '../../store/agentsSlice';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,21 +10,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from 'react-hot-toast';
 
-interface AgentFormProps {
+interface EditAgentFormProps {
+  agent: Agent;
   onClose: () => void;
+  isConnectedToChatbot: boolean;
 }
 
-const AgentForm: React.FC<AgentFormProps> = ({ onClose }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [instructions, setInstructions] = useState('');
+const EditAgentForm: React.FC<EditAgentFormProps> = ({ agent, onClose, isConnectedToChatbot }) => {
+  const [name, setName] = useState(agent.name);
+  const [description, setDescription] = useState(agent.description);
+  const [instructions, setInstructions] = useState(agent.instructions);
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) return;
-    if (!name.trim()) {
+    if (!name || !name.trim()) {
       toast.error('Agent name is required.');
       return;
     }
@@ -39,32 +42,41 @@ const AgentForm: React.FC<AgentFormProps> = ({ onClose }) => {
       toast.error('Instructions must be 500 characters or less.');
       return;
     }
-    dispatch(addAgent({
+    dispatch(updateAgent({
       agent: {
-        name: name.trim(),
+        id: agent.id,
+        name: isConnectedToChatbot ? agent.name : name.trim(),
         description: description.trim(),
         instructions: instructions.trim(),
-        ownerId: userId
+        ownerId: agent.ownerId
       },
       userId
-    }));
-    onClose();
+    })).then(() => {
+      toast.success('Agent updated successfully');
+      onClose();
+    }).catch((error) => {
+      toast.error('Failed to update agent: ' + error.message);
+    });
   };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold">Create New Agent</CardTitle>
+        <CardTitle className="text-3xl font-bold">Edit Agent</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="agent-name">Agent name</Label>
           <Input
             id="agent-name"
-            value={name}
+            value={name ?? ''}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter agent name"
+            disabled={isConnectedToChatbot}
           />
+          {isConnectedToChatbot && (
+            <p className="text-sm text-yellow-600">This agent is connected to a chatbot. The name cannot be changed.</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -91,10 +103,10 @@ const AgentForm: React.FC<AgentFormProps> = ({ onClose }) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit}>Create Agent</Button>
+        <Button onClick={handleSubmit}>Update Agent</Button>
       </CardFooter>
     </Card>
   );
 };
 
-export default AgentForm;
+export default EditAgentForm;

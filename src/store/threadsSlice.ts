@@ -19,11 +19,15 @@ export interface Thread {
 interface ThreadsState {
   threads: Thread[];
   currentThread: Thread | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
 const initialState: ThreadsState = {
   threads: [],
   currentThread: null,
+  status: 'idle',
+  error: null,
 };
 
 export const fetchThreads = createAsyncThunk(
@@ -86,16 +90,14 @@ export const fetchThreadMessages = createAsyncThunk(
 
 export const fetchAndSetThreads = createAsyncThunk(
   'threads/fetchAndSetThreads',
-  async ({ userId, chatbotId }: { userId: string; chatbotId: string }, { dispatch, getState }) => {
+  async ({ userId, chatbotId }: { userId: string; chatbotId: string }, { getState }) => {
     const state = getState() as { threads: ThreadsState };
     if (state.threads.threads.length === 0) {
       const fetchedThreads = await callAPI(APIAction.GET_THREADS, { userId, chatbotId });
       if (fetchedThreads.length > 0) {
-        dispatch(setCurrentThread(fetchedThreads[0]));
         return fetchedThreads;
       } else {
         const newThread = await callAPI(APIAction.CREATE_THREAD, { userId, chatbotId });
-        dispatch(setCurrentThread(newThread));
         return [newThread];
       }
     }
@@ -183,6 +185,7 @@ const threadsSlice = createSlice({
       })
       .addCase(fetchAndSetThreads.fulfilled, (state, action) => {
         state.threads = action.payload;
+        state.currentThread = action.payload[0];
       });
   },
 });

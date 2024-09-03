@@ -6,6 +6,10 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { useRouter, useSearchParams } from 'next/navigation';
 import { auth } from '../../../services/firebase';
 import { RootState } from '../../../store';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 const AdminAuthPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -55,60 +59,59 @@ const AdminAuthPage: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Authentication error:', error);
-      if (error.code === 'auth/user-not-found') {
-        setError('No user found with this email.');
-      } else if (error.code === 'auth/wrong-password') {
-        setError('Incorrect password.');
-      } else if (error.code === 'auth/invalid-email') {
-        setError('Invalid email format.');
-      } else if (error.code === 'auth/email-already-in-use') {
-        setError('Email already in use.');
-      } else if (error.code === 'auth/weak-password') {
-        setError('Password should be at least 6 characters.');
-      } else {
-        setError('Error during authentication. Please try again.');
-      }
+      setError(error.message);
     }
   };
 
   return (
     <div className="container flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">{isSignUp ? 'Admin Sign Up' : 'Admin Login'}</h2>
-        <form onSubmit={handleAuth} className="space-y-4">
-          {validationError && <p className="text-red-500">{validationError}</p>}
-          {error && <p className="text-red-500">{error}</p>}
-          {successMessage && <p className="text-green-500">{successMessage}</p>}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onFocus={() => { setValidationError(null); setError(null); setSuccessMessage(null); }}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onFocus={() => { setValidationError(null); setError(null); setSuccessMessage(null); }}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200">
-            {isSignUp ? 'Sign Up' : 'Login'}
-          </button>
-        </form>
-        <p className="mt-4 text-center text-gray-600">
-          {isSignUp ? 'Already have an account?' : "Don't have an account?"}
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-blue-500 ml-2 hover:underline"
-          >
-            {isSignUp ? 'Login' : 'Sign Up'}
-          </button>
-        </p>
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>{isSignUp ? 'Admin Sign Up' : 'Admin Login'}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleAuth} className="space-y-4">
+            {validationError && <p className="text-red-500">{validationError}</p>}
+            {error && <p className="text-red-500">{error}</p>}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => { setValidationError(null); setError(null); setSuccessMessage(null); }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => { setValidationError(null); setError(null); setSuccessMessage(null); }}
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              {isSignUp ? 'Sign Up' : 'Login'}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter>
+          <p className="text-center text-sm">
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+            <Button
+              variant="link"
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="ml-1 p-0"
+            >
+              {isSignUp ? 'Login' : 'Sign Up'}
+            </Button>
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

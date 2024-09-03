@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { fetchChatbots, removeChatbotAsync } from '../../store/chatbotsSlice';
+import { fetchAgents } from '../../store/agentsSlice';
 import { Edit, Trash2, Eye, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { Agent } from '../../store/agentsSlice';
 
-const ChatbotCard = ({ chatbot, onRemove, agents }: { chatbot: Chatbot, onRemove: (id: string, ownerId: string) => void, agents: Agent[] }) => {
+const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, onRemove: (id: string, ownerId: string) => void, onEdit: (chatbot: Chatbot) => void, agents: Agent[] }) => {
   const router = useRouter();
   const agent = agents.find(a => a.id === chatbot.agentId);
 
@@ -50,7 +51,7 @@ const ChatbotCard = ({ chatbot, onRemove, agents }: { chatbot: Chatbot, onRemove
         <Button variant="outline" size="icon" onClick={handleView}>
           <Eye className="h-4 w-4" />
         </Button>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" onClick={() => onEdit(chatbot)}>
           <Edit className="h-4 w-4" />
         </Button>
         <Button variant="outline" size="icon" onClick={() => onRemove(chatbot.id, chatbot.ownerId)}>
@@ -64,7 +65,7 @@ const ChatbotCard = ({ chatbot, onRemove, agents }: { chatbot: Chatbot, onRemove
   );
 };
 
-const ChatbotList: React.FC = () => {
+const ChatbotList = ({ onEdit }: { onEdit: (chatbot: Chatbot) => void }) => {
   const dispatch = useDispatch<AppDispatch>();
   const chatbots = useSelector((state: RootState) => state.chatbots.chatbots);
   const agents = useSelector((state: RootState) => state.agents.agents);
@@ -73,6 +74,7 @@ const ChatbotList: React.FC = () => {
   useEffect(() => {
     if (userId) {
       dispatch(fetchChatbots(userId));
+      dispatch(fetchAgents(userId));
     }
   }, [dispatch, userId]);
 
@@ -83,7 +85,7 @@ const ChatbotList: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {chatbots.map((chatbot) => (
-        <ChatbotCard key={chatbot.id} chatbot={chatbot} onRemove={handleRemove} agents={agents} />
+        <ChatbotCard key={chatbot.id} chatbot={chatbot} onRemove={handleRemove} onEdit={onEdit} agents={agents} />
       ))}
     </div>
   );

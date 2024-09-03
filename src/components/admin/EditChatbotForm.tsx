@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addChatbotAsync } from '../../store/chatbotsSlice';
+import { updateChatbotAsync } from '../../store/chatbotsSlice';
 import { RootState, AppDispatch } from '../../store';
+import { Chatbot } from '../../store/chatbotsSlice';
 import { getAgentsFromFirebase } from '../../services/firebase';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,15 +13,16 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from 'react-hot-toast';
 
-interface ChatbotFormProps {
+interface EditChatbotFormProps {
+  chatbot: Chatbot;
   onClose: () => void;
 }
 
-const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
-  const [name, setName] = useState('');
-  const [agentId, setAgentId] = useState('');
-  const [description, setDescription] = useState('');
-  const [appearance, setAppearance] = useState({ color: '#000000', font: 'arial', size: '16' });
+const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose }) => {
+  const [name, setName] = useState(chatbot.name);
+  const [agentId, setAgentId] = useState(chatbot.agentId);
+  const [description, setDescription] = useState(chatbot.description);
+  const [appearance, setAppearance] = useState(chatbot.appearance);
   const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
@@ -40,7 +42,6 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) return;
     if (!name.trim()) {
       toast.error('Chatbot name is required.');
       return;
@@ -57,13 +58,12 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
       toast.error('Description must be 500 characters or less.');
       return;
     }
-    dispatch(addChatbotAsync({ 
-      id: Date.now().toString(), 
-      name: name.trim(), 
-      agentId, 
-      description: description.trim(), 
-      appearance,
-      ownerId: userId
+    dispatch(updateChatbotAsync({
+      ...chatbot,
+      name: name.trim(),
+      agentId,
+      description: description.trim(),
+      appearance
     }));
     onClose();
   };
@@ -71,7 +71,7 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold">Create New Chatbot</CardTitle>
+        <CardTitle className="text-3xl font-bold">Edit Chatbot</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
@@ -156,10 +156,10 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!agentId}>Create Chatbot</Button>
+        <Button onClick={handleSubmit}>Update Chatbot</Button>
       </CardFooter>
     </Card>
   );
 };
 
-export default ChatbotForm;
+export default EditChatbotForm;

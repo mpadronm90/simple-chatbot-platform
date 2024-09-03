@@ -5,6 +5,10 @@ import ChatbotList from './ChatbotList';
 import AgentList from './AgentList';
 import ChatbotForm from './ChatbotForm';
 import AgentForm from './AgentForm';
+import EditChatbotForm from './EditChatbotForm';
+import EditAgentForm from './EditAgentForm';
+import { Chatbot } from '../../store/chatbotsSlice';
+import { Agent } from '../../store/agentsSlice';
 
 const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => (
   <aside className="w-64 bg-white h-screen border-r">
@@ -31,6 +35,18 @@ const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showChatbotForm, setShowChatbotForm] = useState(false);
   const [showAgentForm, setShowAgentForm] = useState(false);
+  const [editingChatbot, setEditingChatbot] = useState<Chatbot | null>(null);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+
+  const handleEditChatbot = (chatbot: Chatbot) => {
+    setEditingChatbot(chatbot);
+    setShowChatbotForm(true);
+  };
+
+  const handleEditAgent = (agent: Agent) => {
+    setEditingAgent(agent);
+    setShowAgentForm(true);
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -41,14 +57,18 @@ const AdminDashboard: React.FC = () => {
             <h2 className="text-2xl font-bold mb-4">Chatbots</h2>
             <div className="flex justify-between items-center mb-4">
               <p className="text-gray-600">Manage your chatbots</p>
-              <Button onClick={() => setShowChatbotForm(true)}>
+              <Button onClick={() => { setEditingChatbot(null); setShowChatbotForm(true); }}>
                 <Plus className="mr-2 h-4 w-4" /> Create New Chatbot
               </Button>
             </div>
             {showChatbotForm ? (
-              <ChatbotForm onClose={() => setShowChatbotForm(false)} />
+              editingChatbot ? (
+                <EditChatbotForm chatbot={editingChatbot} onClose={() => { setShowChatbotForm(false); setEditingChatbot(null); }} />
+              ) : (
+                <ChatbotForm onClose={() => setShowChatbotForm(false)} />
+              )
             ) : (
-              <ChatbotList />
+              <ChatbotList onEdit={handleEditChatbot} />
             )}
           </div>
         )}
@@ -57,20 +77,24 @@ const AdminDashboard: React.FC = () => {
             <h2 className="text-2xl font-bold mb-4">Agents</h2>
             <div className="flex justify-between items-center mb-4">
               <p className="text-gray-600">Manage your AI agents</p>
-              <Button onClick={() => setShowAgentForm(true)}>
+              <Button onClick={() => { setEditingAgent(null); setShowAgentForm(true); }}>
                 <Plus className="mr-2 h-4 w-4" /> Create New Agent
               </Button>
             </div>
             {showAgentForm ? (
-              <AgentForm onClose={() => setShowAgentForm(false)} />
+              editingAgent ? (
+                <EditAgentForm agent={editingAgent} onClose={() => { setShowAgentForm(false); setEditingAgent(null); }} isConnectedToChatbot={false} />
+              ) : (
+                <AgentForm onClose={() => setShowAgentForm(false)} />
+              )
             ) : (
-              <AgentList />
+              <AgentList onEdit={handleEditAgent} />
             )}
           </div>
         )}
       </main>
     </div>
   );
-};
+}
 
 export default AdminDashboard;

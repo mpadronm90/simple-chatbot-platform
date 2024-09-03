@@ -39,6 +39,16 @@ export const removeAgent = createAsyncThunk('agents/removeAgent', async ({ id, u
   return id;
 });
 
+export const updateAgent = createAsyncThunk('agents/updateAgent', async ({ agent, userId }: { agent: Agent, userId: string }) => {
+  return await callAPI(APIAction.UPDATE_ASSISTANT, {
+    assistantId: agent.id,
+    name: agent.name,
+    description: agent.description,
+    instructions: agent.instructions,
+    userId,
+  });
+});
+
 const agentsSlice = createSlice({
   name: 'agents',
   initialState,

@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Agent } from '../../store/agentsSlice';
 import { Label } from "@/components/ui/label";
+import { toast } from 'react-hot-toast';
 
-const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void }> = ({ agent, onDelete }) => (
+const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void; onEdit: (agent: Agent) => void }> = ({ agent, onDelete, onEdit }) => (
   <Card className="flex flex-col h-full">
     <CardHeader>
       <CardTitle className="text-xl font-bold truncate">{agent.name}</CardTitle>
@@ -24,7 +25,7 @@ const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void }> = ({
       </div>
     </CardContent>
     <CardFooter className="justify-end space-x-2">
-      <Button variant="outline" size="icon">
+      <Button variant="outline" size="icon" onClick={() => onEdit(agent)}>
         <Edit className="h-4 w-4" />
       </Button>
       <Button variant="outline" size="icon" onClick={() => onDelete(agent.id)}>
@@ -34,9 +35,10 @@ const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void }> = ({
   </Card>
 );
 
-const AgentList: React.FC = () => {
+const AgentList: React.FC<{ onEdit: (agent: Agent) => void }> = ({ onEdit }) => {
   const dispatch = useDispatch<AppDispatch>();
   const agents = useSelector((state: RootState) => state.agents.agents);
+  const chatbots = useSelector((state: RootState) => state.chatbots.chatbots);
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
 
   useEffect(() => {
@@ -47,14 +49,19 @@ const AgentList: React.FC = () => {
 
   const handleDeleteAgent = (id: string) => {
     if (userId) {
-      dispatch(removeAgent({ id, userId }));
+      const isConnected = chatbots.some(chatbot => chatbot.agentId === id);
+      if (isConnected) {
+        toast.error('Cannot delete an agent that is connected to a chatbot.');
+      } else {
+        dispatch(removeAgent({ id, userId }));
+      }
     }
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {agents.map((agent) => (
-        <AgentCard key={agent.id} agent={agent} onDelete={handleDeleteAgent} />
+        <AgentCard key={agent.id} agent={agent} onDelete={handleDeleteAgent} onEdit={onEdit} />
       ))}
     </div>
   );

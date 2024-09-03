@@ -7,6 +7,7 @@ export enum APIAction {
   ADD_MESSAGE = 'addMessage',
   RUN_ASSISTANT = 'runAssistant',
   GET_THREAD_MESSAGES = 'getThreadMessages',
+  UPDATE_ASSISTANT = 'updateAssistant',
 }
 
 export async function callAPI(action: APIAction, data?: any) {

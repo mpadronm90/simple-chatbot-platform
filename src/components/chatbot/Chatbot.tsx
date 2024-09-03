@@ -7,7 +7,9 @@ import {
   fetchAndSetThreads, 
   addMessageToThread, 
   runAssistantWithStream,
-  updateThreadMessages
+  updateThreadMessages,
+  setCurrentThread,
+  setThreads
 } from '../../store/threadsSlice';
 import { ref, onValue, off } from 'firebase/database';
 import { realtimeDb } from '../../services/firebase'; // Adjust this import based on your Firebase setup
@@ -39,6 +41,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
     if (!currentThread && userId && chatbotId) {
       dispatch(fetchAndSetThreads({ userId, chatbotId }));
     }
+
   }, [dispatch, currentThread, userId, chatbotId, chatbot]);
 
   useEffect(() => {
@@ -58,10 +61,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
       onValue(threadRef, onDataChange);
 
       return () => {
+        // Clean up the listener when the component unmounts
         off(threadRef, 'value', onDataChange);
       };
+    
     }
-  }, [dispatch, currentThread]);
+  }, [dispatch, currentThread, userId]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setCurrentThread(null));
+      dispatch(setThreads([]));
+    };
+  }, [dispatch]);
 
   const handleSendMessage = async (content: string) => {
     setIsLoading(true);

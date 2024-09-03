@@ -243,3 +243,31 @@ async function getThreadsByIds(threadIds: string[]) {
   );
   return threads.filter(Boolean);
 }
+
+async function updateAssistant(data: { assistantId: string, name: string, description: string, instructions: string, userId: string }) {
+  console.log('Updating assistant with data:', data);
+  try {
+    const assistant = await openai.beta.assistants.update(data.assistantId, {
+      name: data.name,
+      description: data.description,
+      instructions: data.instructions,
+    });
+    console.log('Assistant updated in OpenAI:', assistant.id);
+
+    const assistantData = {
+      id: assistant.id,
+      name: assistant.name,
+      description: assistant.description,
+      instructions: assistant.instructions,
+      ownerId: data.userId,
+    };
+
+    await db.ref(`agents/${data.userId}/${assistant.id}`).update(assistantData);
+    console.log('Assistant updated in database');
+
+    return NextResponse.json(assistantData);
+  } catch (error) {
+    console.error('Error updating assistant:', error);
+    return NextResponse.json({ error: 'Failed to update assistant' }, { status: 500 });
+  }
+}
