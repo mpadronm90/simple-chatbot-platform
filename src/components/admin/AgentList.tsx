@@ -6,14 +6,22 @@ import { Edit, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Agent } from '../../store/agentsSlice';
+import { Label } from "@/components/ui/label";
 
 const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void }> = ({ agent, onDelete }) => (
-  <Card>
+  <Card className="flex flex-col h-full">
     <CardHeader>
-      <CardTitle>{agent.name}</CardTitle>
+      <CardTitle className="text-xl font-bold truncate">{agent.name}</CardTitle>
     </CardHeader>
-    <CardContent>
-      <p className="text-sm text-gray-500">{agent.description}</p>
+    <CardContent className="flex-grow space-y-4">
+      <div>
+        <Label className="text-sm font-semibold">Description</Label>
+        <p className="text-sm text-gray-700 line-clamp-2">{agent.description}</p>
+      </div>
+      <div>
+        <Label className="text-sm font-semibold">Instructions</Label>
+        <p className="text-sm text-gray-700 line-clamp-2">{agent.instructions}</p>
+      </div>
     </CardContent>
     <CardFooter className="justify-end space-x-2">
       <Button variant="outline" size="icon">

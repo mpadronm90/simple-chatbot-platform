@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
-const withAuth = (WrappedComponent: React.FC) => {
-  const ComponentWithAuth = (props: any) => {
+const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+  const ComponentWithAuth = (props: P) => {
     const [loading, setLoading] = useState(true);
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const authChecked = useSelector((state: RootState) => state.auth.authChecked);

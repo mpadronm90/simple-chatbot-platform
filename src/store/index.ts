@@ -3,6 +3,7 @@ import chatbotsReducer from './chatbotsSlice';
 import authReducer from './authSlice';
 import agentsReducer from './agentsSlice';
 import threadsReducer from './threadsSlice';
+import selectedChatbotReducer from './selectedChatbotSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     auth: authReducer,
     agents: agentsReducer,
     threads: threadsReducer,
+    selectedChatbot: selectedChatbotReducer,
   },
 });
 

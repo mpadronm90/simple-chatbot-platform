@@ -3,9 +3,10 @@ export enum APIAction {
   GET_AGENTS = 'getAgents',
   DELETE_ASSISTANT = 'deleteAssistant',
   CREATE_THREAD = 'createThread',
-  GET_THREADS = 'getThreads',
+  GET_THREADS = 'getThreadsByUserAndChatbot',
   ADD_MESSAGE = 'addMessage',
   RUN_ASSISTANT = 'runAssistant',
+  GET_THREAD_MESSAGES = 'getThreadMessages',
 }
 
 export async function callAPI(action: APIAction, data?: any) {

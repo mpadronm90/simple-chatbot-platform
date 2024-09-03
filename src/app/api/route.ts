@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     case APIAction.CREATE_THREAD:
       return createThread(data);
     case APIAction.GET_THREADS:
-      return getThreadsByUserAndChatbot(data.userId, data.chatbotId, data.adminId);
+      return getThreadsByUserAndChatbot(data.userId, data.chatbotId);
     case APIAction.ADD_MESSAGE:
       return addMessage(data);
     case APIAction.RUN_ASSISTANT:
@@ -159,9 +159,18 @@ async function runAssistantWithStream(data: { threadId: string; assistantId: str
             if (lastMessage.role === 'assistant') {
               const content = lastMessage.content[0];
               if ('text' in content) {
-                controller.enqueue(encoder.encode(content.text.value));
+                const messageText = content.text.value;
+                controller.enqueue(encoder.encode(messageText));
+                
+                // Update the database with the new message
+                await db.ref(`threads/${data.threadId}/messages`).push({
+                  role: 'assistant',
+                  content: messageText,
+                  created: Date.now(),
+                });
               } else if ('image_file' in content) {
                 controller.enqueue(encoder.encode('Image file received'));
+                // Handle image file if needed
               }
             }
             break;
@@ -173,6 +182,7 @@ async function runAssistantWithStream(data: { threadId: string; assistantId: str
 
         controller.close();
       } catch (error) {
+        console.error('Error in runAssistantWithStream:', error);
         controller.error(error);
       }
     },
@@ -199,14 +209,21 @@ async function getThreadsByChatbot(chatbotId: string) {
   return getThreadsByIds(threadIds);
 }
 
-async function getThreadsByUserAndChatbot(userId: string, chatbotId: string, adminId: string) {
-  const userSnapshot = await db.ref(`userThreads/${userId}`).once('value');
-  const chatbotSnapshot = await db.ref(`chatbotThreads/${chatbotId}`).once('value');
-  const userThreadIds = Object.keys(userSnapshot.val() || {});
-  const chatbotThreadIds = new Set(Object.keys(chatbotSnapshot.val() || {}));
-  const threadIds = userThreadIds.filter(id => chatbotThreadIds.has(id));
-  const threads = await getThreadsByIds(threadIds);
-  return threads.filter(thread => thread.adminId === adminId);
+async function getThreadsByUserAndChatbot(userId: string, chatbotId: string) {
+  try {
+    const userSnapshot = await db.ref(`userThreads/${userId}`).once('value');
+    const chatbotSnapshot = await db.ref(`chatbotThreads/${chatbotId}`).once('value');
+    const userThreadIds = Object.keys(userSnapshot.val() || {});
+    const chatbotThreadIds = new Set(Object.keys(chatbotSnapshot.val() || {}));
+    const threadIds = userThreadIds.filter(id => chatbotThreadIds.has(id));
+    const threads = await getThreadsByIds(threadIds);
+    
+    console.log('Filtered threads:', threads);
+    return NextResponse.json(threads);
+  } catch (error) {
+    console.error('Error in getThreadsByUserAndChatbot:', error);
+    return NextResponse.json({ error: 'Failed to fetch threads' }, { status: 500 });
+  }
 }
 
 async function getThreadsByIds(threadIds: string[]) {

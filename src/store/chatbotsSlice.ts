@@ -43,8 +43,8 @@ export const updateChatbotAsync = createAsyncThunk('chatbots/updateChatbot', asy
 
 export const removeChatbotAsync = createAsyncThunk(
   'chatbots/removeChatbot', 
-  async ({ id, ownerId }: { id: string; ownerId: string }) => {
-    await removeChatbotFromFirebase(id, ownerId);
+  async ({ id }: { id: string}) => {
+    await removeChatbotFromFirebase(id);
     return id;
   }
 );

@@ -30,14 +30,17 @@ const initialState: ThreadsState = {
 
 export const fetchThreads = createAsyncThunk(
   'threads/fetchThreads',
-  async ({ userId, chatbotId, adminId }: { userId: string; chatbotId: string; adminId: string }) => {
-    return await callAPI(APIAction.GET_THREADS, { userId, chatbotId, adminId });
+  async ({ userId, chatbotId }: { userId: string; chatbotId: string; }) => {
+    return await callAPI(APIAction.GET_THREADS, { userId, chatbotId });
   }
 );
 
-export const createThread = createAsyncThunk('threads/createThread', async (userId: string) => {
-  return await callAPI(APIAction.CREATE_THREAD, { userId });
-});
+export const createThread = createAsyncThunk(
+  'threads/createThread',
+  async ({ userId, chatbotId }: { userId: string; chatbotId: string }) => {
+    return await callAPI(APIAction.CREATE_THREAD, { userId, chatbotId });
+  }
+);
 
 export const addMessageToThread = createAsyncThunk(
   'threads/addMessageToThread',
@@ -68,7 +71,18 @@ export const runAssistantWithStream = createAsyncThunk(
       }
     }
 
+    // After streaming is complete, fetch updated messages
+    dispatch(fetchThreadMessages({ threadId }));
+
     return { threadId };
+  }
+);
+
+// Add this new async thunk
+export const fetchThreadMessages = createAsyncThunk(
+  'threads/fetchThreadMessages',
+  async ({ threadId }: { threadId: string }) => {
+    return await callAPI(APIAction.GET_THREAD_MESSAGES, { threadId });
   }
 );
 
@@ -136,6 +150,15 @@ const threadsSlice = createSlice({
       })
       .addCase(runAssistantWithStream.fulfilled, (state, action) => {
         // The streaming is complete, you can perform any necessary cleanup or state updates here
+      })
+      .addCase(fetchThreadMessages.fulfilled, (state, action) => {
+        const thread = state.threads.find(t => t.id === action.payload.threadId);
+        if (thread) {
+          thread.messages = action.payload.messages;
+        }
+        if (state.currentThread && state.currentThread.id === action.payload.threadId) {
+          state.currentThread.messages = action.payload.messages;
+        }
       });
   },
 });
