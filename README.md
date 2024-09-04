@@ -58,6 +58,10 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 - Redux Thunk middleware for managing asynchronous logic
 - Seamless integration with Firebase and external APIs
 
+## Docs
+
+You can see some screenshots of the current functionalities here. ![Project Overview](./docs/overview.pdf)
+
 
 ## Database Structure and Flow
 
