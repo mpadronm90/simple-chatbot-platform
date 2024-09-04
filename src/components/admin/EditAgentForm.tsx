@@ -43,14 +43,11 @@ const EditAgentForm: React.FC<EditAgentFormProps> = ({ agent, onClose, isConnect
       return;
     }
     dispatch(updateAgent({
-      agent: {
-        id: agent.id,
-        name: isConnectedToChatbot ? agent.name : name.trim(),
-        description: description.trim(),
-        instructions: instructions.trim(),
-        ownerId: agent.ownerId
-      },
-      userId
+      assistantId: agent.id,
+      name: name.trim(),
+      description: description.trim(),
+      instructions: instructions.trim(),
+      userId: userId
     })).then(() => {
       toast.success('Agent updated successfully');
       onClose();

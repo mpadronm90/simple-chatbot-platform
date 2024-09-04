@@ -21,6 +21,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSelectedChatbot } from '../../store/selectedChatbotSlice';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface ChatbotProps {
   chatbotId: string;
@@ -143,7 +146,28 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
             <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
           </Avatar>
           <div className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-            {message.content}
+            <ReactMarkdown 
+              className="markdown-content"
+              components={{
+                code({inline, className, children, ...props}: any) {
+                  const match = /language-(\w+)/.exec(className || '')
+                  return !inline && match ? (
+                    <SyntaxHighlighter
+                      style={tomorrow as any}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >{String(children).replace(/\n$/, '')}</SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  )
+                }
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
           </div>
         </div>
       </div>
