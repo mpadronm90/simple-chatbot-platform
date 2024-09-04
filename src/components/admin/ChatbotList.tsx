@@ -21,9 +21,43 @@ const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, 
   };
 
   const handleCopyEmbed = () => {
-    const embedCode = `<iframe src="${window.location.origin}/chatbot/${chatbot.id}" width="350" height="500" frameborder="0"></iframe>`;
-    navigator.clipboard.writeText(embedCode);
-    toast.success('Embed code copied to clipboard');
+    const embedCode = `
+    <script>
+      (function() {
+        var iframe = document.createElement('iframe');
+        iframe.src = '${typeof window !== 'undefined' ? window.location.origin : ''}/chatbot/${chatbot.id}';
+        iframe.style.position = 'fixed';
+        iframe.style.bottom = '20px';
+        iframe.style.right = '20px';
+        iframe.style.width = '64px';
+        iframe.style.height = '64px';
+        iframe.style.border = 'none';
+        iframe.style.borderRadius = '50%';
+        iframe.style.zIndex = '10000';
+        iframe.style.transition = 'all 0.3s ease';
+        document.body.appendChild(iframe);
+
+        window.addEventListener('message', function(event) {
+          if (event.data.type === 'CHATBOT_RESIZE') {
+            iframe.style.width = event.data.width;
+            iframe.style.height = event.data.height;
+            iframe.style.borderRadius = event.data.borderRadius;
+          }
+        }, false);
+      })();
+    </script>`;
+
+    navigator.clipboard.writeText(embedCode).then(() => {
+      toast.success('Embed code copied to clipboard', {
+        duration: 3000,
+        icon: '📋',
+      });
+    }).catch(() => {
+      toast.error('Failed to copy embed code', {
+        duration: 3000,
+        icon: '❌',
+      });
+    });
   };
 
   return (
@@ -79,7 +113,7 @@ const ChatbotList = ({ onEdit }: { onEdit: (chatbot: Chatbot) => void }) => {
   }, [dispatch, userId]);
 
   const handleRemove = (chatbotId: string) => {
-    dispatch(removeChatbotAsync({ id: chatbotId }));
+    dispatch(removeChatbotAsync(chatbotId));
   };
 
   return (

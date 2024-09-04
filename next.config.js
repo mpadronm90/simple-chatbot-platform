@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+  // Remove the headers configuration
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

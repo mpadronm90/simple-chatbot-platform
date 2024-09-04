@@ -1,29 +1,24 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import StoreProvider from './StoreProvider';
-import './globals.css'; // Corrected import
-import { monitorAuthState } from '../services/authService';
+import './globals.css';
 import store from '../store';
-
-const ClientWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  useEffect(() => {
-    monitorAuthState();
-  }, []);
-
-  return <>{children}</>;
-};
+import { Toaster } from 'react-hot-toast';
+import AuthStateListener from '../components/auth/AuthStateListener';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="font-sans"> {/* Using a system font fallback */}
+      <body className="font-sans">
         <Provider store={store}>
           <StoreProvider>
-            <ClientWrapper>{children}</ClientWrapper>
+            <AuthStateListener />
+            {children}
           </StoreProvider>
         </Provider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

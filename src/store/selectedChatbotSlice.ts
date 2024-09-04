@@ -1,6 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getChatbotById } from '../services/firebase';
 import { Chatbot } from './chatbotsSlice';
+import { ref, get } from 'firebase/database';
+import { realtimeDb } from '../services/firebase'; // Assuming you have a firebase.ts file with db export
+
+const getChatbotById = async (chatbotId: string): Promise<Chatbot | null> => {
+  try {
+    const chatbotRef = ref(realtimeDb, `chatbots/${chatbotId}`);
+    const snapshot = await get(chatbotRef);
+    if (snapshot.exists()) {
+      return { id: chatbotId, ...snapshot.val() } as Chatbot;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching chatbot:', error);
+    throw error;
+  }
+};
 
 interface SelectedChatbotState {
   chatbot: Chatbot | null;
@@ -18,6 +34,9 @@ export const fetchSelectedChatbot = createAsyncThunk(
   'selectedChatbot/fetchSelectedChatbot',
   async (chatbotId: string) => {
     const chatbot = await getChatbotById(chatbotId);
+    if (!chatbot) {
+      throw new Error('Chatbot not found');
+    }
     return chatbot;
   }
 );
@@ -41,7 +60,5 @@ const selectedChatbotSlice = createSlice({
       });
   },
 });
-
-
 
 export default selectedChatbotSlice.reducer;

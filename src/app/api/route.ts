@@ -12,7 +12,6 @@ if (!app) {
     projectId: process.env.FIREBASE_PROJECT_ID,
     databaseURL: process.env.FIREBASE_DATABASE_URL,
   };
-  console.log('Firebase config:', firebaseConfig);
 
   try {
     app = initializeApp(firebaseConfig);

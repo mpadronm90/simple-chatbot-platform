@@ -1,7 +1,6 @@
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import store from "../store";
-import { setUser, setIsAuthenticated } from '../store/authSlice';
 import { ref, get, set } from 'firebase/database';
 import { realtimeDb } from './firebase';
 
@@ -16,18 +15,6 @@ const handleLogout = async () => {
 };
 
 export default handleLogout;
-
-export const monitorAuthState = () => {
-	onAuthStateChanged(auth, async (user) => {
-		if (user) {
-			store.dispatch(setUser({uid: user.uid, email: user.email}));
-            store.dispatch(setIsAuthenticated(true));
-		} else {
-			store.dispatch(setUser(null));
-            store.dispatch(setIsAuthenticated(false));
-		}
-	});
-};
 
 export const linkUserWithAdmin = async (userId: string, adminId: string) => {
   const userRef = ref(realtimeDb, `users/${adminId}`);

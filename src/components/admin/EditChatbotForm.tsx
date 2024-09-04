@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateChatbotAsync } from '../../store/chatbotsSlice';
 import { RootState, AppDispatch } from '../../store';
 import { Chatbot } from '../../store/chatbotsSlice';
-import { getAgentsFromFirebase } from '../../services/firebase';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,22 +22,8 @@ const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose }) =
   const [agentId, setAgentId] = useState(chatbot.agentId);
   const [description, setDescription] = useState(chatbot.description);
   const [appearance, setAppearance] = useState(chatbot.appearance);
-  const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const userId = useSelector((state: RootState) => state.auth.user?.uid);
-
-  useEffect(() => {
-    const fetchAgents = async () => {
-      if (userId) {
-        const fetchedAgents = await getAgentsFromFirebase(userId);
-        setAgents(fetchedAgents
-          .filter(agent => agent.name !== null)
-          .map(agent => ({ id: agent.id, name: agent.name as string }))
-        );
-      }
-    };
-    fetchAgents();
-  }, [userId]);
+  const agents = useSelector((state: RootState) => state.agents.agents);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

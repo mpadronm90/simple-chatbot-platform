@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
+import AuthComponent from '../auth/AuthComponent';
 import {
   fetchAndSetThreads, 
   addMessageToThread, 
@@ -23,26 +24,28 @@ import { fetchSelectedChatbot } from '../../store/selectedChatbotSlice';
 
 interface ChatbotProps {
   chatbotId: string;
-  userId: string;
-  adminId: string;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
+const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const currentThread = useSelector((state: RootState) => state.threads.currentThread);
   const { chatbot, status: chatbotStatus } = useSelector((state: RootState) => state.selectedChatbot);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
   useEffect(() => {
-    if(!chatbot) {
-      dispatch(fetchSelectedChatbot(chatbotId));
-    }
-    if (!currentThread && userId && chatbotId) {
-      dispatch(fetchAndSetThreads({ userId, chatbotId }));
-    }
+    dispatch(fetchSelectedChatbot(chatbotId));
+  }, [dispatch, chatbotId]);
 
-  }, [dispatch, currentThread, userId, chatbotId, chatbot]);
+  useEffect(() => {
+    if (!currentThread && user && chatbotId) {
+      dispatch(fetchAndSetThreads({ userId: user.uid, chatbotId }));
+    }
+  }, [dispatch, currentThread, user, chatbotId]);
 
   useEffect(() => {
     if (currentThread) {
@@ -66,7 +69,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
       };
     
     }
-  }, [dispatch, currentThread, userId]);
+  }, [dispatch, currentThread, user]);
 
   useEffect(() => {
     return () => {
@@ -74,6 +77,28 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
       dispatch(setThreads([]));
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    const sendSizeToParent = () => {
+      if (window.parent !== window) {
+        const width = isOpen ? 384 : 64; // 384px is equivalent to max-w-md
+        const height = isOpen ? 700 : 64;
+        const borderRadius = isOpen ? '16px' : '50%';
+        
+        window.parent.postMessage({
+          type: 'CHATBOT_RESIZE',
+          isOpen,
+          width: `${width}px`,
+          height: `${height}px`,
+          borderRadius,
+        }, '*');
+      }
+    };
+
+    sendSizeToParent();
+    window.addEventListener('resize', sendSizeToParent);
+    return () => window.removeEventListener('resize', sendSizeToParent);
+  }, [isOpen]);
 
   const handleSendMessage = async (content: string) => {
     setIsLoading(true);
@@ -89,10 +114,14 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
         throw new Error('No valid assistant ID available');
       }
 
+      if (!user) {
+        throw new Error('User is not authenticated');
+      }
+
       await dispatch(runAssistantWithStream({
         threadId: threadToUse?.id || '',
         assistantId: chatbot.agentId,
-        userId: userId
+        userId: user.uid
       }));
     } catch (error) {
       console.error('Error sending message:', error);
@@ -121,8 +150,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
     ));
   };
 
-  return (
-    <Card className="w-full max-w-md mx-auto h-[600px] flex flex-col" style={chatbotStyles}>
+  const renderChatContent = () => {
+    if (!isAuthenticated) {
+      return (
+        <div className="relative h-full flex items-center justify-center">
+          <AuthComponent chatbotId={chatbotId} />
+        </div>
+      );
+    }
+    return renderChatInterface();
+  };
+
+  const renderChatInterface = () => (
+    <>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           {chatbotStatus === 'loading' ? 'Loading...' : chatbot ? chatbot.name : 'Chatbot'}
@@ -148,7 +188,34 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, userId }) => {
           </Button>
         </form>
       </CardFooter>
-    </Card>
+    </>
+  );
+
+  return (
+    <div id="chatbot-container" className={`${isOpen ? 'w-96 h-[700px]' : 'w-16 h-16'} transition-all duration-300 ease-in-out`}>
+      {isOpen ? (
+        <Card className="w-full h-full flex flex-col overflow-hidden" style={{...chatbotStyles, borderRadius: '1rem'}}>
+          {renderChatContent()}
+          <Button
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            onClick={() => setIsOpen(false)}
+          >
+            Close
+          </Button>
+        </Card>
+      ) : (
+        <Button
+          id="chatbot-button"
+          className="w-full h-full bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 flex items-center justify-center"
+          onClick={() => setIsOpen(true)}
+        >
+          <span className="sr-only">Open Chat</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-8 h-8">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </Button>
+      )}
+    </div>
   );
 };
 

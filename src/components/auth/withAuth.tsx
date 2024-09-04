@@ -6,10 +6,9 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
   const ComponentWithAuth = (props: P) => {
     const [loading, setLoading] = useState(true);
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-    const authChecked = useSelector((state: RootState) => state.auth.authChecked);
 
     useEffect(() => {
-      if (authChecked) {
+
         if (!isAuthenticated) {
           const currentPath = window.location.pathname;
           const basePath = currentPath.startsWith('/chatbot/') ? currentPath : '/admin';
@@ -17,8 +16,8 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
         } else {
           setLoading(false);
         }
-      }
-    }, [isAuthenticated, authChecked]);
+      
+    }, [isAuthenticated]);
 
     if (loading) {
       return <div>Loading...</div>; // Or a more sophisticated loading component

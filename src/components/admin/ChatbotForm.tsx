@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChatbotAsync } from '../../store/chatbotsSlice';
+import { fetchAgents } from '../../store/agentsSlice';
 import { RootState, AppDispatch } from '../../store';
-import { getAgentsFromFirebase } from '../../services/firebase';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,22 +21,15 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
   const [agentId, setAgentId] = useState('');
   const [description, setDescription] = useState('');
   const [appearance, setAppearance] = useState({ color: '#000000', font: 'arial', size: '16' });
-  const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
+  const { agents, loading, error } = useSelector((state: RootState) => state.agents);
 
   useEffect(() => {
-    const fetchAgents = async () => {
-      if (userId) {
-        const fetchedAgents = await getAgentsFromFirebase(userId);
-        setAgents(fetchedAgents
-          .filter(agent => agent.name !== null)
-          .map(agent => ({ id: agent.id, name: agent.name as string }))
-        );
-      }
-    };
-    fetchAgents();
-  }, [userId]);
+    if (userId && loading === 'idle') {
+      dispatch(fetchAgents(userId));
+    }
+  }, [userId, loading, dispatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,8 +50,7 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
       toast.error('Description must be 500 characters or less.');
       return;
     }
-    dispatch(addChatbotAsync({ 
-      id: Date.now().toString(), 
+    dispatch(addChatbotAsync({
       name: name.trim(), 
       agentId, 
       description: description.trim(), 
@@ -86,16 +78,20 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
 
         <div className="space-y-2">
           <Label htmlFor="agent-select">Select an Agent</Label>
-          <Select value={agentId} onValueChange={setAgentId}>
-            <SelectTrigger id="agent-select">
-              <SelectValue placeholder="Select an agent" />
-            </SelectTrigger>
-            <SelectContent>
-              {agents.map((agent) => (
-                <SelectItem key={agent.id} value={agent.id}>{agent.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {loading === 'pending' && <p>Loading agents...</p>}
+          {loading === 'failed' && <p>Error: {error}</p>}
+          {loading === 'succeeded' && (
+            <Select value={agentId} onValueChange={setAgentId}>
+              <SelectTrigger id="agent-select">
+                <SelectValue placeholder="Select an agent" />
+              </SelectTrigger>
+              <SelectContent>
+                {agents.map((agent) => (
+                  <SelectItem key={agent.id} value={agent.id}>{agent.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -156,7 +152,7 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!agentId}>Create Chatbot</Button>
+        <Button onClick={handleSubmit} disabled={!agentId || loading !== 'succeeded'}>Create Chatbot</Button>
       </CardFooter>
     </Card>
   );

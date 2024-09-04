@@ -1,11 +1,16 @@
 'use client';
 
-import React from 'react';
-import ChatbotEmbed from '../../../components/chatbot/ChatbotEmbed';
-import withAuth from '../../../components/auth/withAuth';
+import React, { useState } from 'react';
+import Chatbot from '../../../components/chatbot/Chatbot';
 
 const ChatbotPage: React.FC<{ params: { id: string } }> = ({ params }) => {
-  return <ChatbotEmbed chatbotId={params.id} />;
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="w-full h-full flex items-end justify-end">
+      <Chatbot chatbotId={params.id} isOpen={isOpen} setIsOpen={setIsOpen} />
+    </div>
+  );
 };
 
-export default withAuth(ChatbotPage);
+export default ChatbotPage;
