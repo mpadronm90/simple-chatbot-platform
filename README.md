@@ -4,15 +4,60 @@
 
 This project is a sample chatbot platform built with Next.js and React. It allows admins to create and configure chatbots that interact with various AI agents via OpenAI. The platform includes functionality for end-users to authenticate, start chatting with the chatbot, and maintain a history of their chat interactions.
 
-## Main Features
+## Main Features - GOALS
 
 1. **Admin Authentication**: Users authenticate to access the entire admin section.
 2. **Admin Dashboard**: Lists all created chatbots with options to create, edit, and delete them.
 3. **Agent Management in Dashboard**: Admins can create and manage multiple AI agents using the OpenAI API.
 4. **Chatbot Configuration**: A form to configure the chatbot's behavior and appearance, including selecting an AI agent, with a live preview.
-5. **Deployable Chatbot**: Generates a unique URL for the chatbot and an iframe code snippet for embedding it elsewhere.
+5. **Deployable Chatbot**: Generates a unique URL for the chatbot and an iframe code snippet for embedding it elsewhere. TODO
 6. **End-User Authentication**: Simple email/password authentication for end-users who interact with the chatbot.
-7. **Chat History**: Maintain a history of each user's interactions (threads) with the chatbot.
+7. **Chat History**: Maintain a history of each user's interactions (threads) with the chatbot. TODO
+
+## Current Features
+
+### Authentication
+- Simple authentication system for both admin panel and chatbot interfaces
+- Login and signup functionality
+
+### Agent Management
+- Create, Read, Update, and Delete (CRUD) operations for AI agents
+- Customize agent properties and behaviors
+
+### Chatbot Management
+- CRUD operations for chatbots
+- Customize chatbot appearance and settings
+- Associate chatbots with specific AI agents
+
+### Chatbot Preview
+- Live preview of chatbots within the admin interface
+- Test chatbot functionality before deployment
+
+### Chatbot Sharing
+- Generate embeddable scripts for easy chatbot integration into websites
+- Customizable chatbot appearance in embedded form
+
+## Project Architecture
+
+### Server-Side Operations
+- OpenAI API integration for reading and writing AI responses
+- Firebase write operations for data persistence
+- API routes for secure server-side operations
+
+### Client-Side Architecture
+- API middleware for flexible provider management
+- Real-time data rendering using client-side technologies
+- Redux for state management
+- Redux Thunk for handling asynchronous calls to Firebase and APIs
+
+### State Management
+- Centralized state management using Redux
+- Efficient handling of complex application state
+
+### Asynchronous Operations
+- Redux Thunk middleware for managing asynchronous logic
+- Seamless integration with Firebase and external APIs
+
 
 ## Database Structure and Flow
 
