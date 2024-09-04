@@ -258,4 +258,4 @@ Please ensure your code follows the project's coding standards and includes appr
 
 ## License
 
-Under the MIT License in [License](https://github.com/mpadronm90/simple-chatbot-platform/blob/main/LICENSE))
+Under the MIT License in [License](https://github.com/mpadronm90/simple-chatbot-platform/blob/main/LICENSE)
