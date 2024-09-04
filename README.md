@@ -76,7 +76,7 @@ firebase-root
 │
 ├── agents
 │ └── {agentId}
-│ ├── userId: string
+│ ├── ownerId: string
 │ ├── name: string
 │ ├── email: string
 │ └── ...other agent-specific fields
@@ -84,23 +84,22 @@ firebase-root
 ├── chatbots
 │ └── {chatbotId}
 │ ├── name: string
-│ ├── userId: string
+│ ├── ownerId: string
 │ ├── agentId: string
 │ └── ...other chatbot-specific fields
 │
 ├── threads
-│ └── {threadId}
-│ ├── chatbotId: string
-│ ├── userId: string
-│ ├── messages: string[]
-│ └── ...other thread-specific fields
-│
-└── messages
-└── {messageId}
-├── threadId: string
-├── senderId: string
-├── content: string
-└── ...other message-specific fields
+  └── {threadId}
+  ├── chatbotId: string
+  ├── userId: string
+  ├── messages: string[]
+  └── ...other thread-specific fields
+   │
+   └── messages
+      └── {messageId}
+      ├── threadId: string
+      ├── content: string
+      └── ...other message-specific fields
 ```
 
 ### Tech Stack
@@ -168,10 +167,28 @@ src/
 2. Install dependencies: `npm install`
 3. Set up environment variables in a `.env.local` file:
    ```
-   NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
-   NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
+   # Firebase Configuration
+   NEXT_PUBLIC_FIREBASE_API_KEY=firebase-api-key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=localhost:9099
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=<your-firebase-project-id>
+   NEXT_PUBLIC_FIREBASE_DATABASE_URL=http://127.0.0.1:9000/?ns=<your-firebase-project-id>
+   
+   FIREBASE_PROJECT_ID=simple-chatbot-platform
+   FIREBASE_DATABASE_URL=http://127.0.0.1:9000/?ns=simple-chatbot-platform
+   
+   # OpenAI Configuration
+   OPENAI_API_KEY=your-openai-api-key
+   OPENAI_API_BASE=https://api.openai.com/v1
+   
+   # Environment
+   NODE_ENV=development
+   NEXT_PUBLIC_APP_ENV=development
+   
+   # Firebase Emulator Configuration
+   FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+   FIREBASE_DATABASE_EMULATOR_HOST=127.0.0.1:9000
+   FIREBASE_FUNCTIONS_EMULATOR_HOST=localhost:5001
+   FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199
    ```
 4. Run the development server: `npm run dev`
 5. Run Firebase emulators for Auth and Realtime Database
