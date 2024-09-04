@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { callAPI, APIAction } from '../services/api';
+import { APIAction, callAPI } from '../services/api';
 
 export interface Agent {
   id: string;
@@ -11,13 +11,13 @@ export interface Agent {
 
 interface AgentsState {
   agents: Agent[];
-  loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
 const initialState: AgentsState = {
   agents: [] as Agent[],
-  loading: 'idle',
+  status: 'idle',
   error: null,
 };
 
@@ -39,15 +39,17 @@ export const removeAgent = createAsyncThunk('agents/removeAgent', async ({ id, u
   return id;
 });
 
-export const updateAgent = createAsyncThunk('agents/updateAgent', async ({ agent, userId }: { agent: Agent, userId: string }) => {
-  return await callAPI(APIAction.UPDATE_ASSISTANT, {
-    assistantId: agent.id,
-    name: agent.name,
-    description: agent.description,
-    instructions: agent.instructions,
-    userId,
-  });
-});
+export const updateAgent = createAsyncThunk(
+  'agents/updateAgent',
+  async (data: { assistantId: string, name: string, description: string, instructions: string, userId: string }, { rejectWithValue }) => {
+    try {
+      const response = await callAPI(APIAction.UPDATE_ASSISTANT, data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error as any);
+    }
+  }
+);
 
 const agentsSlice = createSlice({
   name: 'agents',
@@ -56,14 +58,14 @@ const agentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAgents.pending, (state) => {
-        state.loading = 'pending';
+        state.status = 'loading';
       })
       .addCase(fetchAgents.fulfilled, (state, action) => {
-        state.loading = 'succeeded';
+        state.status = 'succeeded';
         state.agents = action.payload;
       })
       .addCase(fetchAgents.rejected, (state, action) => {
-        state.loading = 'failed';
+        state.status = 'failed';
         state.error = action.error.message || null;
       })
       .addCase(addAgent.fulfilled, (state, action) => {
@@ -71,6 +73,20 @@ const agentsSlice = createSlice({
       })
       .addCase(removeAgent.fulfilled, (state, action) => {
         state.agents = state.agents.filter(agent => agent.id !== action.payload);
+      })
+      .addCase(updateAgent.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateAgent.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const index = state.agents.findIndex(agent => agent.id === action.payload.id);
+        if (index !== -1) {
+          state.agents[index] = action.payload;
+        }
+      })
+      .addCase(updateAgent.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || null;
       });
   },
 });

@@ -23,13 +23,13 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
   const [appearance, setAppearance] = useState({ color: '#000000', font: 'arial', size: '16' });
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
-  const { agents, loading, error } = useSelector((state: RootState) => state.agents);
+  const { agents, status, error } = useSelector((state: RootState) => state.agents);
 
   useEffect(() => {
-    if (userId && loading === 'idle') {
+    if (userId && status === 'idle') {
       dispatch(fetchAgents(userId));
     }
-  }, [userId, loading, dispatch]);
+  }, [userId, status, dispatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,9 +78,9 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
 
         <div className="space-y-2">
           <Label htmlFor="agent-select">Select an Agent</Label>
-          {loading === 'pending' && <p>Loading agents...</p>}
-          {loading === 'failed' && <p>Error: {error}</p>}
-          {loading === 'succeeded' && (
+          {status === 'loading' && <p>Loading agents...</p>}
+          {status === 'failed' && <p>Error: {error}</p>}
+          {status === 'succeeded' && (
             <Select value={agentId} onValueChange={setAgentId}>
               <SelectTrigger id="agent-select">
                 <SelectValue placeholder="Select an agent" />
@@ -152,7 +152,7 @@ const ChatbotForm: React.FC<ChatbotFormProps> = ({ onClose }) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!agentId || loading !== 'succeeded'}>Create Chatbot</Button>
+        <Button onClick={handleSubmit} disabled={!agentId || status !== 'succeeded'}>Create Chatbot</Button>
       </CardFooter>
     </Card>
   );

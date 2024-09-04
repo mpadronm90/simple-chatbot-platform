@@ -57,6 +57,9 @@ export async function POST(request: Request) {
       return addMessage(data);
     case APIAction.RUN_ASSISTANT:
       return runAssistantWithStream(data);
+    case APIAction.UPDATE_ASSISTANT:
+      console.log('Calling updateAssistant');
+      return updateAssistant(data);
     default:
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   }
