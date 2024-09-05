@@ -5,16 +5,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  exportPathMap: async function (
-    defaultPathMap,
-    { dev, dir, outDir, distDir, buildId }
-  ) {
-    return {
-      '/': { page: '/' },
-      '/chatbot/[id]': { page: '/chatbot/[id]' },
-      // Add other dynamic routes here
-    }
-  },
 }
 
 module.exports = nextConfig
