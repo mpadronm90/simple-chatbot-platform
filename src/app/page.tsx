@@ -39,9 +39,6 @@ export default function Home() {
           <Link href="/admin" className="w-full">
             <Button variant="outline" className="w-full">Admin Panel</Button>
           </Link>
-          <Link href="/admin/auth?type=login" className="w-full">
-            <Button variant="outline" className="w-full">Admin Login</Button>
-          </Link>
         </CardFooter>
       </Card>
     </main>
