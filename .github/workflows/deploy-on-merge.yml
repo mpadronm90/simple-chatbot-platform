@@ -38,4 +38,4 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Deploy to Firebase
-        run: firebase deploy --only hosting,functions --project ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+        run: firebase deploy --only hosting,functions --project ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
