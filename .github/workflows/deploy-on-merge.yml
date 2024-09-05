@@ -26,7 +26,7 @@ jobs:
           NEXT_PUBLIC_FUNCTIONS_API_URL: ${{ vars.NEXT_PUBLIC_FUNCTIONS_API_URL }}
       - name: Set Firebase Functions Config
         run: |
-          firebase functions:config:set openai.apikey="$OPENAI_API_KEY" --project ${{ vars.FIREBASE_PROJECT_ID }}
+          firebase functions:config:set openai.apikey="$OPENAI_API_KEY" --project ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -36,5 +36,5 @@ jobs:
           args: deploy --only hosting,functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-          FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+          FIREBASE_DATABASE_URL: ${{ vars.NEXT_PUBLIC_FIREBASE_DATABASE_URL }}
