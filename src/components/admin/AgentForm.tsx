@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from 'react-hot-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AgentFormProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ const AgentForm: React.FC<AgentFormProps> = ({ onClose }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [instructions, setInstructions] = useState('');
+  const [model, setModel] = useState('gpt-4-turbo-preview');
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
 
@@ -44,6 +46,7 @@ const AgentForm: React.FC<AgentFormProps> = ({ onClose }) => {
         name: name.trim(),
         description: description.trim(),
         instructions: instructions.trim(),
+        model: model,
         ownerId: userId
       },
       userId
@@ -87,6 +90,20 @@ const AgentForm: React.FC<AgentFormProps> = ({ onClose }) => {
             placeholder="Enter agent instructions"
             rows={5}
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="agent-model">Model</Label>
+          <Select value={model} onValueChange={setModel}>
+            <SelectTrigger id="agent-model">
+              <SelectValue placeholder="Select a model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="gpt-4-turbo-preview">GPT-4 Turbo</SelectItem>
+              <SelectItem value="gpt-4">GPT-4</SelectItem>
+              <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">

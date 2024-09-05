@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { fetchChatbots, removeChatbotAsync } from '../../store/chatbotsSlice';
+import { fetchChatbots, removeChatbotAsync, addChatbotAsync } from '../../store/chatbotsSlice';
 import { fetchAgents } from '../../store/agentsSlice';
-import { Edit, Trash2, Eye, Copy } from 'lucide-react';
+import { Edit, Trash2, Eye, Copy, Plus, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Chatbot } from '../../store/chatbotsSlice';
@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { Agent } from '../../store/agentsSlice';
+import EditChatbotForm from './EditChatbotForm';
 
 const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, onRemove: (id: string, ownerId: string) => void, onEdit: (chatbot: Chatbot) => void, agents: Agent[] }) => {
   const router = useRouter();
@@ -99,11 +100,12 @@ const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, 
   );
 };
 
-const ChatbotList = ({ onEdit }: { onEdit: (chatbot: Chatbot) => void }) => {
+const ChatbotList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const chatbots = useSelector((state: RootState) => state.chatbots.chatbots);
   const agents = useSelector((state: RootState) => state.agents.agents);
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
+  const [editingChatbot, setEditingChatbot] = useState<Chatbot | null>(null);
 
   useEffect(() => {
     if (userId) {
@@ -116,11 +118,74 @@ const ChatbotList = ({ onEdit }: { onEdit: (chatbot: Chatbot) => void }) => {
     dispatch(removeChatbotAsync(chatbotId));
   };
 
+  const handleEdit = (chatbot: Chatbot) => {
+    setEditingChatbot(chatbot);
+  };
+
+  const handleCreateChatbot = () => {
+    if (agents.length === 0) {
+      toast.error('Please create an agent first.');
+      return;
+    }
+
+    const defaultChatbot: Omit<Chatbot, 'id'> = {
+      name: 'New Chatbot',
+      agentId: agents[0].id,
+      description: '',
+      appearance: { color: '#000000', font: 'arial', size: '16' },
+      ownerId: userId!
+    };
+
+    dispatch(addChatbotAsync(defaultChatbot))
+      .then((action) => {
+        if (addChatbotAsync.fulfilled.match(action)) {
+          setEditingChatbot(action.payload);
+        }
+      })
+      .catch((error) => {
+        toast.error('Failed to create chatbot: ' + error.message);
+      });
+  };
+
+  const handleCloseEdit = () => {
+    setEditingChatbot(null);
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {chatbots.map((chatbot) => (
-        <ChatbotCard key={chatbot.id} chatbot={chatbot} onRemove={handleRemove} onEdit={onEdit} agents={agents} />
-      ))}
+    <div className="space-y-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Chatbots</h2>
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            {editingChatbot ? (
+              <Button variant="outline" onClick={handleCloseEdit}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
+              </Button>
+            ) : (
+              <p className="text-gray-600">Manage your chatbots</p>
+            )}
+          </div>
+          <Button onClick={handleCreateChatbot}>
+            <Plus className="mr-2 h-4 w-4" /> Create New Chatbot
+          </Button>
+        </div>
+      </div>
+
+      {editingChatbot ? (
+        <EditChatbotForm chatbot={editingChatbot} onClose={handleCloseEdit} />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {chatbots.map((chatbot) => (
+            <ChatbotCard 
+              key={chatbot.id} 
+              chatbot={chatbot} 
+              onRemove={handleRemove} 
+              onEdit={handleEdit} 
+              agents={agents} 
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

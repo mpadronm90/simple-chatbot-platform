@@ -1,4 +1,4 @@
-"use client"; // Add this line at the top
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,8 +13,8 @@ import {
   setThreads
 } from '../../store/threadsSlice';
 import { ref, onValue, off } from 'firebase/database';
-import { realtimeDb } from '../../services/firebase'; // Adjust this import based on your Firebase setup
-import { Send } from 'lucide-react';
+import { realtimeDb } from '../../services/firebase';
+import { Cross2Icon, PaperPlaneIcon, ChatBubbleIcon } from '@radix-ui/react-icons';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -187,10 +187,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
 
   const renderChatInterface = () => (
     <>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-2xl font-bold">
           {chatbotStatus === 'loading' ? 'Loading...' : chatbot ? chatbot.name : 'Chatbot'}
         </CardTitle>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-gray-500 hover:text-gray-700"
+          onClick={() => setIsOpen(false)}
+        >
+          <Cross2Icon className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </Button>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden">
         <ScrollArea className="h-full pr-4">
@@ -207,7 +216,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
             disabled={isLoading}
           />
           <Button type="submit" size="icon" disabled={isLoading}>
-            <Send className="h-4 w-4" />
+            <PaperPlaneIcon className="h-4 w-4" />
             <span className="sr-only">Send message</span>
           </Button>
         </form>
@@ -220,12 +229,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
       {isOpen ? (
         <Card className="w-full h-full flex flex-col overflow-hidden" style={{...chatbotStyles, borderRadius: '1rem'}}>
           {renderChatContent()}
-          <Button
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-            onClick={() => setIsOpen(false)}
-          >
-            Close
-          </Button>
         </Card>
       ) : (
         <Button
@@ -234,9 +237,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
           onClick={() => setIsOpen(true)}
         >
           <span className="sr-only">Open Chat</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-8 h-8">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
+          <ChatBubbleIcon className="w-8 h-8" />
         </Button>
       )}
     </div>

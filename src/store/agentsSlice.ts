@@ -6,6 +6,7 @@ export interface Agent {
   name: string | null;
   description: string;
   instructions: string;
+  model: string;
   ownerId: string;
 }
 
@@ -30,6 +31,7 @@ export const addAgent = createAsyncThunk('agents/addAgent', async ({ agent, user
     name: agent.name ?? '',
     description: agent.description,
     instructions: agent.instructions,
+    model: agent.model,
     userId,
   });
 });
@@ -41,7 +43,7 @@ export const removeAgent = createAsyncThunk('agents/removeAgent', async ({ id, u
 
 export const updateAgent = createAsyncThunk(
   'agents/updateAgent',
-  async (data: { assistantId: string, name: string, description: string, instructions: string, userId: string }, { rejectWithValue }) => {
+  async (data: { assistantId: string, name: string, description: string, instructions: string, model: string, userId: string }, { rejectWithValue }) => {
     try {
       const response = await callAPI(APIAction.UPDATE_ASSISTANT, data);
       return response;
