@@ -18,15 +18,15 @@ import { ResetIcon } from '@radix-ui/react-icons';
 interface EditChatbotFormProps {
   chatbot: Chatbot;
   onClose: () => void;
+  onUpdate: (updatedChatbot: Chatbot) => void;
 }
 
 interface ChatbotHistoryEntry {
   previousConfig: Chatbot;
-  updatedConfig: Chatbot;
   timestamp: number;
 }
 
-const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose }) => {
+const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose, onUpdate }) => {
   const [name, setName] = useState(chatbot.name);
   const [agentId, setAgentId] = useState(chatbot.agentId);
   const [description, setDescription] = useState(chatbot.description);
@@ -34,9 +34,15 @@ const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose }) =
   const [isChatbotOpen, setIsChatbotOpen] = useState(true);
   const [key, setKey] = useState(0);
   const [chatbotHistory, setChatbotHistory] = useState<ChatbotHistoryEntry[]>([]);
+  const [historyCount, setHistoryCount] = useState(1);
   
   const dispatch = useDispatch<AppDispatch>();
   const agents = useSelector((state: RootState) => state.agents.agents);
+
+  useEffect(() => {
+    console.log('Chatbot history updated:', chatbotHistory);
+    setHistoryCount(chatbotHistory.length);
+  }, [chatbotHistory]);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -66,55 +72,54 @@ const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose }) =
 
     dispatch(updateChatbotAsync(updatedChatbot)).then(() => {
       toast.success('Chatbot updated successfully');
-      setKey(prevKey => prevKey + 1);
       
-      // Add to history only if it's not a new chatbot
-      if (chatbotHistory.length > 0) {
-        setChatbotHistory(prevHistory => [
-          {
-            previousConfig: chatbot,
-            updatedConfig: updatedChatbot,
-            timestamp: Date.now()
-          },
-          ...prevHistory
-        ]);
-      }
+      setChatbotHistory(prevHistory => {
+        console.log('Previous history:', prevHistory);
+        const newEntry = {
+          previousConfig: chatbot,
+          timestamp: Date.now()
+        };
+        return [newEntry, ...prevHistory];
+      });
+
+      onUpdate(updatedChatbot);  // Call onUpdate with the updated chatbot
+      setKey(prevKey => prevKey + 1);
     }).catch((error) => {
       toast.error(`Failed to update chatbot: ${error.message}`);
     });
-  }, [dispatch, chatbot, name, agentId, description, appearance, chatbotHistory]);
+  }, [dispatch, chatbot, name, agentId, description, appearance, onUpdate]);
 
   const handleRollback = useCallback(() => {
+    console.log('Attempting rollback. History length:', chatbotHistory.length);
     if (chatbotHistory.length > 0) {
-      const lastEntry = chatbotHistory[0];
-      const rollbackChatbot = {
-        ...chatbot,
-        name: lastEntry.previousConfig.name,
-        agentId: lastEntry.previousConfig.agentId,
-        description: lastEntry.previousConfig.description,
-        appearance: lastEntry.previousConfig.appearance
-      };
+      const previousEntry = chatbotHistory[0];
+      console.log('History here', previousEntry);
+      const rollbackChatbot = previousEntry.previousConfig;
 
-      dispatch(updateChatbotAsync(rollbackChatbot)).then(() => {
-        setName(rollbackChatbot.name);
-        setAgentId(rollbackChatbot.agentId);
-        setDescription(rollbackChatbot.description);
-        setAppearance(rollbackChatbot.appearance);
-        
-        // Remove the last entry from history
-        setChatbotHistory(prevHistory => prevHistory.slice(1));
-        
-        // Increment the key to force re-render of the ChatbotComponent
-        setKey(prevKey => prevKey + 1);
-        
-        toast.success('Rolled back to previous configuration');
-      }).catch((error) => {
-        toast.error(`Failed to rollback chatbot: ${error.message}`);
+      console.log('Rolling back to:', rollbackChatbot);
+
+      setName(rollbackChatbot.name);
+      setAgentId(rollbackChatbot.agentId);
+      setDescription(rollbackChatbot.description);
+      setAppearance(rollbackChatbot.appearance);
+      
+      setChatbotHistory(prevHistory => {
+        const newHistory = prevHistory.slice(1);
+        console.log('New history after rollback:', newHistory);
+        return newHistory;
+      });
+      setKey(prevKey => prevKey + 1);
+      
+      toast.success('Rolled back to previous configuration');
+      
+      dispatch(updateChatbotAsync(rollbackChatbot)).catch((error) => {
+        toast.error(`Failed to update chatbot in store: ${error.message}`);
       });
     } else {
+      console.log('No previous configuration available');
       toast.error('No previous configuration available');
     }
-  }, [chatbot, chatbotHistory, dispatch]);
+  }, [chatbotHistory, dispatch]);
 
   return (
     <div className="flex h-full space-x-4">
@@ -206,9 +211,13 @@ const EditChatbotForm: React.FC<EditChatbotFormProps> = ({ chatbot, onClose }) =
         <CardFooter className="flex justify-between">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <div className="space-x-2">
-            <Button variant="outline" onClick={handleRollback} disabled={chatbotHistory.length === 0}>
+            <Button 
+              variant="outline" 
+              onClick={handleRollback} 
+              disabled={historyCount == 0}
+            >
               <ResetIcon className="mr-2 h-4 w-4" />
-              Rollback
+              Rollback ({historyCount})
             </Button>
             <Button onClick={handleSubmit}>Update Chatbot</Button>
           </div>

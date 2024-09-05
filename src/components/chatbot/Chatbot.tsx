@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import AuthComponent from '../auth/AuthComponent';
@@ -39,6 +39,33 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
   const { chatbot, status: chatbotStatus } = useSelector((state: RootState) => state.selectedChatbot);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [messageCount, setMessageCount] = useState(0);
+
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (currentThread?.messages) {
+      const newMessageCount = Object.keys(currentThread.messages).length;
+      if (newMessageCount > messageCount) {
+        scrollToBottom();
+      }
+      setMessageCount(newMessageCount);
+    }
+  }, [currentThread?.messages, messageCount]);
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     dispatch(fetchSelectedChatbot(chatbotId));
@@ -145,7 +172,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
             <AvatarFallback>{message.role === 'user' ? 'U' : 'B'}</AvatarFallback>
             <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
           </Avatar>
-          <div className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+          <div 
+            className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+            style={message.role === 'assistant' ? chatbotStyles : {}}
+          >
             <ReactMarkdown 
               className="markdown-content"
               components={{
@@ -187,7 +217,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
 
   const renderChatInterface = () => (
     <>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-row items-center justify-between" style={chatbotStyles}>
         <CardTitle className="text-2xl font-bold">
           {chatbotStatus === 'loading' ? 'Loading...' : chatbot ? chatbot.name : 'Chatbot'}
         </CardTitle>
@@ -202,12 +232,18 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
         </Button>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden">
-        <ScrollArea className="h-full pr-4">
+        <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
           {renderMessages()}
         </ScrollArea>
       </CardContent>
       <CardFooter>
-        <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(input); setInput(''); }} className="flex w-full space-x-2">
+        <form onSubmit={(e) => { 
+          e.preventDefault(); 
+          handleSendMessage(input); 
+          setInput(''); 
+          // Scroll to bottom immediately after sending
+          scrollToBottom();
+        }} className="flex w-full space-x-2">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}

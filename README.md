@@ -23,11 +23,13 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 ### Agent Management
 - Create, Read, Update, and Delete (CRUD) operations for AI agents
 - Customize agent properties and behaviors
+- Connected to OpenAI assistants
 
 ### Chatbot Management
 - CRUD operations for chatbots
 - Customize chatbot appearance and settings
 - Associate chatbots with specific AI agents
+- Rollback functionality while editing
 
 ### Chatbot Preview
 - Live preview of chatbots within the admin interface
@@ -60,7 +62,7 @@ This project is a sample chatbot platform built with Next.js and React. It allow
 
 ## Docs
 
-You can see some screenshots of the current functionalities here. ![Project Overview](./docs/overview.pdf)
+You can see some screenshots of the current functionalities here. [Project Overview](./docs/overview.pdf)
 
 
 ## Database Structure and Flow

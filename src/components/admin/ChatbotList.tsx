@@ -3,23 +3,23 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { fetchChatbots, removeChatbotAsync, addChatbotAsync } from '../../store/chatbotsSlice';
 import { fetchAgents } from '../../store/agentsSlice';
-import { Edit, Trash2, Eye, Copy, Plus, ArrowLeft } from 'lucide-react';
+import { Edit, Trash2, Copy, Plus, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Chatbot } from '../../store/chatbotsSlice';
 import { Label } from "@/components/ui/label";
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { Agent } from '../../store/agentsSlice';
 import EditChatbotForm from './EditChatbotForm';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, onRemove: (id: string, ownerId: string) => void, onEdit: (chatbot: Chatbot) => void, agents: Agent[] }) => {
-  const router = useRouter();
   const agent = agents.find(a => a.id === chatbot.agentId);
-
-  const handleView = () => {
-    router.push(`/chatbot/${chatbot.id}`);
-  };
 
   const handleCopyEmbed = () => {
     const embedCode = `
@@ -83,18 +83,42 @@ const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, 
         </div>
       </CardContent>
       <CardFooter className="justify-end space-x-2">
-        <Button variant="outline" size="icon" onClick={handleView}>
-          <Eye className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" onClick={() => onEdit(chatbot)}>
-          <Edit className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" onClick={() => onRemove(chatbot.id, chatbot.ownerId)}>
-          <Trash2 className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" onClick={handleCopyEmbed}>
-          <Copy className="h-4 w-4" />
-        </Button>
+      <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={handleCopyEmbed}>
+                <Copy className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Copy Embed Code</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={() => onEdit(chatbot)}>
+                <Edit className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Edit Chatbot</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={() => onRemove(chatbot.id, chatbot.ownerId)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete Chatbot</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </CardFooter>
     </Card>
   );
@@ -149,6 +173,10 @@ const ChatbotList = () => {
 
   const handleCloseEdit = () => {
     setEditingChatbot(null);
+    // Refresh the chatbots list
+    if (userId) {
+      dispatch(fetchChatbots(userId));
+    }
   };
 
   return (
@@ -172,7 +200,12 @@ const ChatbotList = () => {
       </div>
 
       {editingChatbot ? (
-        <EditChatbotForm chatbot={editingChatbot} onClose={handleCloseEdit} />
+        <EditChatbotForm 
+          key={editingChatbot.id} 
+          chatbot={editingChatbot} 
+          onClose={handleCloseEdit} 
+          onUpdate={(updatedChatbot) => setEditingChatbot(updatedChatbot)}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {chatbots.map((chatbot) => (
