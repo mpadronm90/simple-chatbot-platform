@@ -32,7 +32,7 @@ jobs:
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' > /tmp/google-credentials.json
     
       # Step 6: Build the project
-      - name: Build
+      - name: Build and Export
         run: npm run build && npm run build:functions
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
