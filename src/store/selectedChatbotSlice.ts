@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Chatbot } from './chatbotsSlice';
+import { Chatbot } from '../shared/api.types';
 import { ref, get } from 'firebase/database';
 import { realtimeDb } from '../services/firebase'; // Assuming you have a firebase.ts file with db export
 
