@@ -2,6 +2,8 @@ import { APIAction, APIInput } from '../shared/api.types';
 import { httpsCallable } from "firebase/functions";
 import { firebaseFunctions } from "./firebase";
 
+export { APIAction };  // Add this line to export APIAction
+
 export const callAPI = async (action: APIAction, data: APIInput[keyof APIInput]): Promise<any> => {
   try {
     const functions = firebaseFunctions;
