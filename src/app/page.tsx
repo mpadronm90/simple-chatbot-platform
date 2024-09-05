@@ -13,7 +13,7 @@ export default function Home() {
 
   const handleGoToChat = () => {
     if (chatbotId.trim()) {
-      router.push(`/chatbot/${chatbotId}`);
+      router.push(`/chatbot?id=${chatbotId}`);
     }
   };
 
