@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateChatbotAsync } from '../../store/chatbotsSlice';
 import { RootState, AppDispatch } from '../../store';
-import { Chatbot } from '../../store/chatbotsSlice';
+import { Chatbot } from '../../shared/api.types';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

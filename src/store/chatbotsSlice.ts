@@ -1,19 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ref, get, set, remove, push } from 'firebase/database';
 import { realtimeDb } from '../services/firebase';
-
-export interface Chatbot {
-  id: string;
-  name: string;
-  agentId: string;
-  description: string;
-  appearance: {
-    color: string;
-    font: string;
-    size: string;
-  };
-  ownerId: string;
-}
+import { Chatbot } from '../shared/api.types';
 
 interface ChatbotsState {
   chatbots: Chatbot[];

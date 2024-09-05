@@ -1,31 +1,33 @@
-export enum APIAction {
-  CREATE_ASSISTANT = 'createAssistant',
-  GET_AGENTS = 'getAgents',
-  DELETE_ASSISTANT = 'deleteAssistant',
-  CREATE_THREAD = 'createThread',
-  GET_THREADS = 'getThreadsByUserAndChatbot',
-  ADD_MESSAGE = 'addMessage',
-  RUN_ASSISTANT = 'runAssistant',
-  GET_THREAD_MESSAGES = 'getThreadMessages',
-  UPDATE_ASSISTANT = 'updateAssistant',
-}
+import { APIAction, APIInput } from '../shared/api.types';
+import { httpsCallable } from "firebase/functions";
+import { firebaseFunctions } from "./firebase";
 
-export async function callAPI(action: APIAction, data?: any) {
-  const response = await fetch('/api', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ action, data }),
-  });
-
-  if (!response.ok) {
-    throw new Error('API call failed');
+export const callAPI = async (action: APIAction, data: APIInput[keyof APIInput]): Promise<any> => {
+  try {
+    const functions = firebaseFunctions;
+    const functionName = actionToFunctionName(action);
+    const callableFunction = httpsCallable(functions, functionName);
+    
+    const result = await callableFunction(data);
+    return result.data;
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
   }
+};
 
-  if (action === APIAction.RUN_ASSISTANT) {
-    return response; // Return the raw response for streaming
+function actionToFunctionName(action: APIAction): string {
+  switch (action) {
+    case APIAction.CREATE_ASSISTANT: return 'createAssistant';
+    case APIAction.GET_AGENTS: return 'getAgents';
+    case APIAction.DELETE_ASSISTANT: return 'deleteAssistant';
+    case APIAction.CREATE_THREAD: return 'createThread';
+    case APIAction.GET_THREADS: return 'getThreads';
+    case APIAction.ADD_MESSAGE: return 'addMessage';
+    case APIAction.RUN_ASSISTANT: return 'runAssistant';
+    case APIAction.UPDATE_ASSISTANT: return 'updateAssistant';
+    case APIAction.GET_THREAD_MESSAGES: return 'getThreadMessages';
+    default:
+      throw new Error(`Unsupported action: ${action}`);
   }
-
-  return response.json();
 }

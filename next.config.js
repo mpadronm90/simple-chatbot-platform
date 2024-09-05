@@ -1,6 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove the headers configuration
-};
+  reactStrictMode: true,
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
+  exportPathMap: async function (
+    defaultPathMap,
+    { dev, dir, outDir, distDir, buildId }
+  ) {
+    return {
+      '/': { page: '/' },
+      '/chatbot/[id]': { page: '/chatbot/[id]' },
+      // Add other dynamic routes here
+    }
+  },
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

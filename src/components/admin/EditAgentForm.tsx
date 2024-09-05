@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateAgent } from '../../store/agentsSlice';
 import { AppDispatch, RootState } from '../../store';
-import { Agent } from '../../store/agentsSlice';
+import { Agent } from '../../shared/api.types';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,12 +45,12 @@ const EditAgentForm: React.FC<EditAgentFormProps> = ({ agent, onClose, isConnect
       return;
     }
     dispatch(updateAgent({
-      assistantId: agent.id,
+      id: agent.id,
       name: name.trim(),
       description: description.trim(),
       instructions: instructions.trim(),
       model: model,
-      userId: userId
+      ownerId: userId
     })).then(() => {
       toast.success('Agent updated successfully');
       onClose();

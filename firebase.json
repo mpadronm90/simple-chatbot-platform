@@ -26,6 +26,12 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
     "headers": [
       {
         "source": "**",
@@ -48,6 +54,12 @@
     },
     "database": {
       "port": 9000
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "functions": {
+      "port": 5001
     }
   }
 }

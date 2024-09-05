@@ -10,13 +10,15 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
     const loading = !isAuthenticated;
 
     useEffect(() => {
-
-        if (!isAuthenticated && isAuthChecked) {
-          const currentPath = window.location.pathname;
-          const basePath = currentPath.startsWith('/chatbot/') ? currentPath : '/admin';
-          window.location.href = `${basePath}/auth?type=login`;
-        }
-      
+      if (!isAuthenticated && isAuthChecked) {
+        const currentPath = window.location.pathname;
+        const basePath = currentPath.startsWith('/chatbot') ? '/chatbot' : '/admin';
+        const chatbotId = currentPath.split('/').pop();
+        const redirectPath = basePath === '/chatbot' && chatbotId
+          ? `${basePath}?id=${chatbotId}&type=login`
+          : `${basePath}/auth?type=login`;
+        window.location.href = redirectPath;
+      }
     }, [isAuthenticated, isAuthChecked]);
 
     if (loading) {

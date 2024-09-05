@@ -10,7 +10,8 @@ import {
   runAssistantWithStream,
   updateThreadMessages,
   setCurrentThread,
-  setThreads
+  setThreads,
+  runAssistant // Add this import
 } from '../../store/threadsSlice';
 import { ref, onValue, off } from 'firebase/database';
 import { realtimeDb } from '../../services/firebase';
@@ -24,6 +25,15 @@ import { fetchSelectedChatbot } from '../../store/selectedChatbotSlice';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+// Add this new component for the loading indicator
+const LoadingIndicator = () => (
+  <div className="flex items-center space-x-1">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }}></div>
+    ))}
+  </div>
+);
 
 interface ChatbotProps {
   chatbotId: string;
@@ -41,6 +51,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
   const [input, setInput] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [messageCount, setMessageCount] = useState(0);
+  const [isResponseLoading, setIsResponseLoading] = useState(false);
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -132,11 +143,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
 
   const handleSendMessage = async (content: string) => {
     setIsLoading(true);
+    setIsResponseLoading(true);
     try {
-      let threadToUse = currentThread;
-
       await dispatch(addMessageToThread({
-        threadId: threadToUse?.id || '',
+        threadId: currentThread?.id || '',
         content: content
       }));
 
@@ -148,8 +158,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
         throw new Error('User is not authenticated');
       }
 
-      await dispatch(runAssistantWithStream({
-        threadId: threadToUse?.id || '',
+      await dispatch(runAssistant({
+        threadId: currentThread?.id || '',
         assistantId: chatbot.agentId,
         userId: user.uid
       }));
@@ -157,6 +167,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
       console.error('Error sending message:', error);
     } finally {
       setIsLoading(false);
+      setIsResponseLoading(false);
     }
   };
 
@@ -165,43 +176,60 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
   const renderMessages = () => {
     if (!currentThread || !currentThread.messages) return null;
 
-    return Object.entries(currentThread.messages).map(([messageId, message]) => (
-      <div key={messageId} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-        <div className={`flex items-start ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-          <Avatar className="w-8 h-8">
-            <AvatarFallback>{message.role === 'user' ? 'U' : 'B'}</AvatarFallback>
-            <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
-          </Avatar>
-          <div 
-            className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
-            style={message.role === 'assistant' ? chatbotStyles : {}}
-          >
-            <ReactMarkdown 
-              className="markdown-content"
-              components={{
-                code({inline, className, children, ...props}: any) {
-                  const match = /language-(\w+)/.exec(className || '')
-                  return !inline && match ? (
-                    <SyntaxHighlighter
-                      style={tomorrow as any}
-                      language={match[1]}
-                      PreTag="div"
-                      {...props}
-                    >{String(children).replace(/\n$/, '')}</SyntaxHighlighter>
-                  ) : (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
-                  )
-                }
-              }}
-            >
-              {message.content}
-            </ReactMarkdown>
+    return (
+      <>
+        {Object.entries(currentThread.messages).map(([messageId, message]) => (
+          <div key={messageId} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+            <div className={`flex items-start ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              <Avatar className="w-8 h-8">
+                <AvatarFallback>{message.role === 'user' ? 'U' : 'B'}</AvatarFallback>
+                <AvatarImage src={message.role === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
+              </Avatar>
+              <div 
+                className={`mx-2 p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                style={message.role === 'assistant' ? chatbotStyles : {}}
+              >
+                <ReactMarkdown 
+                  className="markdown-content"
+                  components={{
+                    code({inline, className, children, ...props}: any) {
+                      const match = /language-(\w+)/.exec(className || '')
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          style={tomorrow as any}
+                          language={match[1]}
+                          PreTag="div"
+                          {...props}
+                        >{String(children).replace(/\n$/, '')}</SyntaxHighlighter>
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      )
+                    }
+                  }}
+                >
+                  {message.content}
+                </ReactMarkdown>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    ));
+        ))}
+        {isResponseLoading && (
+          <div className="flex justify-start mb-4">
+            <div className="flex items-start flex-row">
+              <Avatar className="w-8 h-8">
+                <AvatarFallback>B</AvatarFallback>
+                <AvatarImage src="/bot-avatar.png" />
+              </Avatar>
+              <div className="mx-2 p-3 rounded-lg bg-gray-200 text-gray-800" style={chatbotStyles}>
+                <LoadingIndicator />
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const renderChatContent = () => {

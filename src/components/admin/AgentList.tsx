@@ -5,10 +5,9 @@ import { fetchAgents, removeAgent, addAgent } from '../../store/agentsSlice';
 import { Edit, Trash2, Plus, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Agent } from '../../store/agentsSlice';
+import { Agent } from '../../shared/api.types';
 import { Label } from "@/components/ui/label";
 import { toast } from 'react-hot-toast';
-import AgentForm from './AgentForm';
 import EditAgentForm from './EditAgentForm';
 
 const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void; onEdit: (agent: Agent) => void }> = ({ agent, onDelete, onEdit }) => (
@@ -37,17 +36,12 @@ const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void; onEdit
   </Card>
 );
 
-interface AgentListProps {
-  onEdit: (agent: Agent) => void;
-  editingAgent: Agent | null;
-  onCloseEdit: () => void;
-}
-
-const AgentList: React.FC<AgentListProps> = ({ onEdit, editingAgent, onCloseEdit }) => {
+const AgentList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const agents = useSelector((state: RootState) => state.agents.agents);
   const chatbots = useSelector((state: RootState) => state.chatbots.chatbots);
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
 
   useEffect(() => {
     if (userId) {
@@ -67,7 +61,32 @@ const AgentList: React.FC<AgentListProps> = ({ onEdit, editingAgent, onCloseEdit
   };
 
   const handleCreateAgent = () => {
-    onEdit({ id: '', name: '', description: '', instructions: '', model: 'gpt-4-turbo-preview', ownerId: userId || '' });
+    if (userId) {
+      const draftAgent: Omit<Agent, 'id'> = {
+        name: '',
+        description: '',
+        instructions: '',
+        model: 'gpt-4-turbo-preview',
+        ownerId: userId
+      };
+      dispatch(addAgent({ agent: draftAgent, userId }))
+        .then((action) => {
+          if (addAgent.fulfilled.match(action)) {
+            setEditingAgent(action.payload);
+          }
+        })
+        .catch((error) => {
+          toast.error('Failed to create draft agent: ' + error.message);
+        });
+    }
+  };
+
+  const handleEditAgent = (agent: Agent) => {
+    setEditingAgent(agent);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingAgent(null);
   };
 
   return (
@@ -77,33 +96,31 @@ const AgentList: React.FC<AgentListProps> = ({ onEdit, editingAgent, onCloseEdit
         <div className="flex justify-between items-center mb-4">
           <div>
             {editingAgent ? (
-              <Button variant="outline" onClick={onCloseEdit}>
+              <Button variant="outline" onClick={handleCloseEdit}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
               </Button>
             ) : (
               <p className="text-gray-600">Manage your AI agents</p>
             )}
           </div>
-          <Button onClick={handleCreateAgent}>
-            <Plus className="mr-2 h-4 w-4" /> Create New Agent
-          </Button>
+          {!editingAgent && (
+            <Button onClick={handleCreateAgent}>
+              <Plus className="mr-2 h-4 w-4" /> Create New Agent
+            </Button>
+          )}
         </div>
       </div>
 
       {editingAgent ? (
-        editingAgent.id ? (
-          <EditAgentForm 
-            agent={editingAgent} 
-            onClose={onCloseEdit} 
-            isConnectedToChatbot={chatbots.some(chatbot => chatbot.agentId === editingAgent.id)}
-          />
-        ) : (
-          <AgentForm onClose={onCloseEdit} />
-        )
+        <EditAgentForm 
+          agent={editingAgent} 
+          onClose={handleCloseEdit} 
+          isConnectedToChatbot={chatbots.some(chatbot => chatbot.agentId === editingAgent.id)}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {agents.map((agent) => (
-            <AgentCard key={agent.id} agent={agent} onDelete={handleDeleteAgent} onEdit={onEdit} />
+            <AgentCard key={agent.id} agent={agent} onDelete={handleDeleteAgent} onEdit={handleEditAgent} />
           ))}
         </div>
       )}

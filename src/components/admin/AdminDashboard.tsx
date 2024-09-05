@@ -3,12 +3,6 @@ import { Package2, MessageSquare, Users, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ChatbotList from './ChatbotList';
 import AgentList from './AgentList';
-import ChatbotForm from './ChatbotForm';
-import AgentForm from './AgentForm';
-import EditChatbotForm from './EditChatbotForm';
-import EditAgentForm from './EditAgentForm';
-import { Chatbot } from '../../store/chatbotsSlice';
-import { Agent } from '../../store/agentsSlice';
 
 const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => (
   <aside className="w-64 bg-white h-screen border-r">
@@ -33,15 +27,6 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab:
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
-
-  const handleEditAgent = (agent: Agent) => {
-    setEditingAgent(agent);
-  };
-
-  const handleCloseAgentForm = () => {
-    setEditingAgent(null);
-  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -49,11 +34,7 @@ const AdminDashboard: React.FC = () => {
       <main className="flex-1 p-8 overflow-auto">
         {activeTab === 'chatbots' && <ChatbotList />}
         {activeTab === 'agents' && (
-          <AgentList 
-            onEdit={handleEditAgent} 
-            editingAgent={editingAgent}
-            onCloseEdit={handleCloseAgentForm}
-          />
+          <AgentList />
         )}
       </main>
     </div>

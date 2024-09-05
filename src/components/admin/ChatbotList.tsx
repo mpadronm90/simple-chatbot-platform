@@ -6,10 +6,9 @@ import { fetchAgents } from '../../store/agentsSlice';
 import { Edit, Trash2, Copy, Plus, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Chatbot } from '../../store/chatbotsSlice';
+import { Chatbot, Agent } from '../../shared/api.types';
 import { Label } from "@/components/ui/label";
 import { toast } from 'react-hot-toast';
-import { Agent } from '../../store/agentsSlice';
 import EditChatbotForm from './EditChatbotForm';
 import {
   Tooltip,
@@ -26,7 +25,7 @@ const ChatbotCard = ({ chatbot, onRemove, onEdit, agents }: { chatbot: Chatbot, 
     <script>
       (function() {
         var iframe = document.createElement('iframe');
-        iframe.src = '${typeof window !== 'undefined' ? window.location.origin : ''}/chatbot/${chatbot.id}';
+        iframe.src = '${typeof window !== 'undefined' ? window.location.origin : ''}/chatbot?id=${chatbot.id}';
         iframe.style.position = 'fixed';
         iframe.style.bottom = '20px';
         iframe.style.right = '20px';

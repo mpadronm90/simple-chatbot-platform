@@ -1,14 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { APIAction, callAPI } from '../services/api';
-
-export interface Agent {
-  id: string;
-  name: string | null;
-  description: string;
-  instructions: string;
-  model: string;
-  ownerId: string;
-}
+import { callAPI } from '../services/api';
+import { APIAction, Agent } from '../shared/api.types';
 
 interface AgentsState {
   agents: Agent[];
@@ -32,7 +24,7 @@ export const addAgent = createAsyncThunk('agents/addAgent', async ({ agent, user
     description: agent.description,
     instructions: agent.instructions,
     model: agent.model,
-    userId,
+    ownerId: userId,
   });
 });
 
@@ -43,7 +35,7 @@ export const removeAgent = createAsyncThunk('agents/removeAgent', async ({ id, u
 
 export const updateAgent = createAsyncThunk(
   'agents/updateAgent',
-  async (data: { assistantId: string, name: string, description: string, instructions: string, model: string, userId: string }, { rejectWithValue }) => {
+  async (data: Agent, { rejectWithValue }) => {
     try {
       const response = await callAPI(APIAction.UPDATE_ASSISTANT, data);
       return response;
