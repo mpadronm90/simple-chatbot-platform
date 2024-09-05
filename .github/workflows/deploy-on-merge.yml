@@ -28,8 +28,8 @@ jobs:
         run: npm install -g firebase-tools
 
       # Step 5: Authenticate using gcloud with the service account
-      - name: Set up Google Cloud SDK (gcloud)
-        uses: google-github-actions/setup-gcloud@master
+      - name: Set up gcloud Cloud SDK environment
+        uses: google-github-actions/setup-gcloud@v2.1.1
         with:
           service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           export_default_credentials: true
