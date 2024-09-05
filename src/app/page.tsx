@@ -42,9 +42,6 @@ export default function Home() {
           <Link href="/admin/auth?type=login" className="w-full">
             <Button variant="outline" className="w-full">Admin Login</Button>
           </Link>
-          <Link href="/admin/auth?type=signup" className="w-full">
-            <Button variant="outline" className="w-full">Admin Sign Up</Button>
-          </Link>
         </CardFooter>
       </Card>
     </main>
