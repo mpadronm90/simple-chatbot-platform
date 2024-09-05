@@ -45,9 +45,9 @@ jobs:
 
       # Step 7: Set Firebase Functions Config (if needed for OpenAI or other config)
       - name: Set Firebase Functions Config
-        run: |
-          firebase functions:config:set openai.apikey="${{ secrets.OPENAI_API_KEY }}" --project ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-
+        run: firebase functions:config:set openai.apikey="${{ secrets.OPENAI_API_KEY }}" --project ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "${{ github.workspace }}/firebase-service-account.json"
       # Step 8: Deploy to Firebase (hosting and functions)
       - name: Deploy to Firebase
         run: firebase deploy --only hosting,functions --project ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
