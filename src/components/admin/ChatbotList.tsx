@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { fetchChatbots, removeChatbotAsync, addChatbotAsync } from '../../store/chatbotsSlice';
 import { fetchAgents } from '../../store/agentsSlice';
-import { Edit, Trash2, Copy, Plus, ArrowLeft } from 'lucide-react';
+import { Edit, Trash2, Copy, Plus, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Chatbot, Agent } from '../../shared/api.types';
@@ -129,11 +129,15 @@ const ChatbotList = () => {
   const agents = useSelector((state: RootState) => state.agents.agents);
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
   const [editingChatbot, setEditingChatbot] = useState<Chatbot | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (userId) {
-      dispatch(fetchChatbots(userId));
-      dispatch(fetchAgents(userId));
+      setIsLoading(true);
+      Promise.all([
+        dispatch(fetchChatbots(userId)),
+        dispatch(fetchAgents(userId))
+      ]).finally(() => setIsLoading(false));
     }
   }, [dispatch, userId]);
 
@@ -198,7 +202,11 @@ const ChatbotList = () => {
         </div>
       </div>
 
-      {editingChatbot ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      ) : editingChatbot ? (
         <EditChatbotForm 
           key={editingChatbot.id} 
           chatbot={editingChatbot} 

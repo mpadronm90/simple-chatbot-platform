@@ -9,6 +9,7 @@ import { Agent } from '../../shared/api.types';
 import { Label } from "@/components/ui/label";
 import { toast } from 'react-hot-toast';
 import EditAgentForm from './EditAgentForm';
+import { Loader2 } from 'lucide-react'; // Add this import
 
 const AgentCard: React.FC<{ agent: Agent; onDelete: (id: string) => void; onEdit: (agent: Agent) => void }> = ({ agent, onDelete, onEdit }) => (
   <Card className="flex flex-col h-full">
@@ -42,10 +43,12 @@ const AgentList: React.FC = () => {
   const chatbots = useSelector((state: RootState) => state.chatbots.chatbots);
   const userId = useSelector((state: RootState) => state.auth.user?.uid);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (userId) {
-      dispatch(fetchAgents(userId));
+      setIsLoading(true);
+      dispatch(fetchAgents(userId)).finally(() => setIsLoading(false));
     }
   }, [dispatch, userId]);
 
@@ -111,7 +114,11 @@ const AgentList: React.FC = () => {
         </div>
       </div>
 
-      {editingAgent ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      ) : editingAgent ? (
         <EditAgentForm 
           agent={editingAgent} 
           onClose={handleCloseEdit} 

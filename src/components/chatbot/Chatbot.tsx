@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback, useRef as ReactRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import AuthComponent from '../auth/AuthComponent';
@@ -11,9 +11,10 @@ import {
   updateThreadMessages,
   setCurrentThread,
   setThreads,
-  runAssistant // Add this import
+  runAssistant, 
+  addMessageToCurrentThread // Add this import
 } from '../../store/threadsSlice';
-import { ref, onValue, off } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { realtimeDb } from '../../services/firebase';
 import { Cross2Icon, PaperPlaneIcon, ChatBubbleIcon } from '@radix-ui/react-icons';
 import { Button } from "@/components/ui/button";
@@ -88,29 +89,35 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
     }
   }, [dispatch, currentThread, user, chatbotId]);
 
+  const hasSubscribed = useRef(false);
+
   useEffect(() => {
-    if (currentThread) {
-      const threadRef = ref(realtimeDb, `threads/${currentThread.id}`);
-      
-      const onDataChange = (snapshot: any) => {
-        if (snapshot.exists()) {
-          const threadData = snapshot.val();
+    if (currentThread && !hasSubscribed.current) {
+      console.log('subscribing');
+      const messagesRef = ref(realtimeDb, `threads/${currentThread.id}/messages`);
+
+      const unsubscribe = onValue(messagesRef, (snapshot) => {
+        const messages = snapshot.val();
+        if (messages) {
+          console.log('messages', messages);
           dispatch(updateThreadMessages({
-            threadId: threadData.id,
-            messages: threadData.messages
+            threadId: currentThread.id,
+            messages: messages
           }));
+          scrollToBottom();
         }
-      };
+      });
 
-      onValue(threadRef, onDataChange);
+      hasSubscribed.current = true;
 
+      // Cleanup the listener on component unmount
       return () => {
-        // Clean up the listener when the component unmounts
-        off(threadRef, 'value', onDataChange);
+        // console.log('unsubscribing');
+        // unsubscribe();
+        // hasSubscribed.current = false;
       };
-    
     }
-  }, [dispatch, currentThread, user]);
+  }, [currentThread, dispatch]);
 
   useEffect(() => {
     return () => {
@@ -163,6 +170,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
         assistantId: chatbot.agentId,
         userId: user.uid
       }));
+      
+      // Scroll to bottom after the assistant's message is added
+      scrollToBottom();
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -176,9 +186,13 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
   const renderMessages = () => {
     if (!currentThread || !currentThread.messages) return null;
 
+    const sortedMessages = Object.entries(currentThread.messages)
+      .sort(([, a], [, b]) => a.created - b.created)
+      .map(([messageId, message]) => ({ messageId, ...message }));
+
     return (
       <>
-        {Object.entries(currentThread.messages).map(([messageId, message]) => (
+        {sortedMessages.map(({ messageId, ...message }) => (
           <div key={messageId} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
             <div className={`flex items-start ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               <Avatar className="w-8 h-8">

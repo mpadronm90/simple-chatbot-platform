@@ -103,7 +103,10 @@ const threadsSlice = createSlice({
     },
     addMessageToCurrentThread: (state, action: PayloadAction<{ messageId: string; message: Message }>) => {
       if (state.currentThread) {
-        state.currentThread.messages[action.payload.messageId] = action.payload.message;
+        state.currentThread.messages = {
+          ...state.currentThread.messages,
+          [action.payload.messageId]: action.payload.message
+        };
       }
     },
     updateAssistantMessage: (state, action: PayloadAction<{ threadId: string; messageId: string; content: string }>) => {
@@ -146,18 +149,18 @@ const threadsSlice = createSlice({
           content_type,
           created
         };
+        if (state.currentThread && state.currentThread.id === threadId) {
+          state.currentThread.messages = {
+            ...state.currentThread.messages,
+            [id]: newMessage
+          };
+        }
         const thread = state.threads.find((t: Thread) => t.id === threadId);
         if (thread) {
-          if (!thread.messages) {
-            thread.messages = {};
-          }
-          thread.messages[id] = newMessage;
-        }
-        if (state.currentThread && state.currentThread.id === threadId) {
-          if (!state.currentThread.messages) {
-            state.currentThread.messages = {};
-          }
-          state.currentThread.messages[id] = newMessage;
+          thread.messages = {
+            ...thread.messages,
+            [id]: newMessage
+          };
         }
       })
       .addCase(runAssistantWithStream.fulfilled, (state, action) => {

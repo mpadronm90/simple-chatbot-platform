@@ -128,64 +128,6 @@ async function addMessageImpl(data: APIInput[APIAction.ADD_MESSAGE]): Promise<AP
   return messageData;
 }
 
-// /**
-//  * Runs an assistant that save chunks of messages to the realtime database and returns the full response.
-//  * @param {Object} data - Run data
-//  * @return {Promise<{ message: Message }>} Full response
-//  */
-// async function runAssistantStreamImpl(data: APIInput[APIAction.RUN_ASSISTANT]): Promise<{ messages: Message[] }> {
-//   // Create a run with stream: true
-//   const run = await openai.beta.threads.runs.create(data.threadId, {
-//     assistant_id: data.assistantId,
-//     stream: true,
-//   });
-
-//   const messageRef = db.ref(`threads/${data.threadId}/messages`).push();
-//   await messageRef.set({
-//     role: "assistant",
-//     content: "",
-//     created: Date.now(),
-//   });
-//   let fullContent = "";
-
-//   for await (const chunk of run) {
-//     if ("object" in chunk && chunk.object === "thread.message.delta") {
-//       const delta = chunk as ThreadMessageDelta;
-//       if (delta.content && delta.content[0]?.type === "text") {
-//         const newContent = delta.content[0].text.value;
-//         const contentDelta = newContent.slice(fullContent.length);
-
-//         if (contentDelta) {
-//           fullContent += contentDelta;
-//           await messageRef.update({
-//             content: fullContent,
-//           });
-//         }
-//       }
-//     }
-//   }
-
-//   // Ensure final content is saved
-//   if (messageRef) {
-//     await messageRef.update({
-//       content: fullContent,
-//       status: "completed",
-//     });
-//   }
-
-//   // Return the final message
-//   return {
-//     messages: messageRef ? [{
-//       id: messageRef.key || "",
-//       role: "assistant",
-//       content: fullContent,
-//       created: Date.now(),
-//       content_type: "text",
-//       threadId: data.threadId,
-//     }] : [],
-//   };
-// }
-
 /**
  * Updates an existing assistant.
  * @param {Object} data - Assistant update data
@@ -264,10 +206,11 @@ async function getThreadMessagesImpl(threadId: string): Promise<APIResponse[APIA
   const snapshot = await db.ref(`threads/${threadId}/messages`).once("value");
   return snapshot.val() || {};
 }
+
 /**
  * Runs an assistant and retrieves the response.
  * @param {Object} data - Run data
- * @return {Promise<{ message: Message }>} Assistant's response
+ * @return {Promise<{ success: boolean, message: Message }>} Assistant's response
  */
 async function runAssistantImpl(data: APIInput[APIAction.RUN_ASSISTANT]): Promise<APIResponse[APIAction.RUN_ASSISTANT]> {
   const run = await openai.beta.threads.runs.create(data.threadId, {
@@ -276,9 +219,18 @@ async function runAssistantImpl(data: APIInput[APIAction.RUN_ASSISTANT]): Promis
 
   let runStatus = await openai.beta.threads.runs.retrieve(data.threadId, run.id);
 
-  while (runStatus.status !== "completed" && runStatus.status !== "failed") {
+  // Add a retry limit to prevent infinite polling
+  let retryCount = 0;
+  const maxRetries = 30; // Set a max retry limit (e.g., 30 seconds)
+
+  while (runStatus.status !== "completed" && runStatus.status !== "failed" && retryCount < maxRetries) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     runStatus = await openai.beta.threads.runs.retrieve(data.threadId, run.id);
+    retryCount++;
+  }
+
+  if (retryCount === maxRetries) {
+    throw new Error("Run timed out");
   }
 
   if (runStatus.status === "failed") {
@@ -299,13 +251,16 @@ async function runAssistantImpl(data: APIInput[APIAction.RUN_ASSISTANT]): Promis
       threadId: data.threadId,
     };
 
-    await db.ref(`threads/${data.threadId}/messages/${latestMessage.id}`).set(messageData);
+    // Use push() to generate a new key for the message
+    const newMessageRef = db.ref(`threads/${data.threadId}/messages`).push();
+    await newMessageRef.set(messageData);
 
-    return {message: messageData};
+    return { success: true, message: messageData };
   } else {
     throw new Error("No text content found in assistant message");
   }
 }
+
 
 export const createAssistant = functions.https.onCall(async (data: APIInput[APIAction.CREATE_ASSISTANT], context) => {
   if (!context.auth) {
