@@ -91,33 +91,33 @@ const Chatbot: React.FC<ChatbotProps> = ({ chatbotId, isOpen, setIsOpen }) => {
 
   const hasSubscribed = useRef(false);
 
-  useEffect(() => {
-    if (currentThread && !hasSubscribed.current) {
-      console.log('subscribing');
-      const messagesRef = ref(realtimeDb, `threads/${currentThread.id}/messages`);
+  // useEffect(() => {
+  //   if (currentThread && !hasSubscribed.current) {
+  //     console.log('subscribing');
+  //     const messagesRef = ref(realtimeDb, `threads/${currentThread.id}/messages`);
 
-      const unsubscribe = onValue(messagesRef, (snapshot) => {
-        const messages = snapshot.val();
-        if (messages) {
-          console.log('messages', messages);
-          dispatch(updateThreadMessages({
-            threadId: currentThread.id,
-            messages: messages
-          }));
-          scrollToBottom();
-        }
-      });
+  //     const unsubscribe = onValue(messagesRef, (snapshot) => {
+  //       const messages = snapshot.val();
+  //       if (messages) {
+  //         console.log('messages', messages);
+  //         dispatch(updateThreadMessages({
+  //           threadId: currentThread.id,
+  //           messages: messages
+  //         }));
+  //         scrollToBottom();
+  //       }
+  //     });
 
-      hasSubscribed.current = true;
+  //     hasSubscribed.current = true;
 
-      // Cleanup the listener on component unmount
-      return () => {
-        // console.log('unsubscribing');
-        // unsubscribe();
-        // hasSubscribed.current = false;
-      };
-    }
-  }, [currentThread, dispatch]);
+  //     // Cleanup the listener on component unmount
+  //     return () => {
+  //       // console.log('unsubscribing');
+  //       // unsubscribe();
+  //       // hasSubscribed.current = false;
+  //     };
+  //   }
+  // }, [currentThread, dispatch]);
 
   useEffect(() => {
     return () => {
