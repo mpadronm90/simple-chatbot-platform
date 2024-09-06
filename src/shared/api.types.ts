@@ -57,7 +57,7 @@ export interface APIResponse {
   [APIAction.CREATE_THREAD]: Thread;
   [APIAction.GET_THREADS]: Thread[];
   [APIAction.ADD_MESSAGE]: Message;
-  [APIAction.RUN_ASSISTANT]: { success: boolean };
+  [APIAction.RUN_ASSISTANT]: { success: boolean, message: Message };
   [APIAction.GET_THREAD_MESSAGES]: { [key: string]: Message };
   [APIAction.UPDATE_ASSISTANT]: Agent;
 }

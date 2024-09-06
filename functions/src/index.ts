@@ -255,7 +255,7 @@ async function runAssistantImpl(data: APIInput[APIAction.RUN_ASSISTANT]): Promis
     const newMessageRef = db.ref(`threads/${data.threadId}/messages`).push();
     await newMessageRef.set(messageData);
 
-    return { success: true, message: messageData };
+    return {success: true, message: messageData};
   } else {
     throw new Error("No text content found in assistant message");
   }
